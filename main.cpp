@@ -13,7 +13,7 @@ bool DEBUGGING = false;
 // This is used by commonLibF4
 namespace Version
 {
-    inline constexpr std::size_t MAJOR = 1;
+    inline constexpr std::size_t MAJOR = 0;
     inline constexpr std::size_t MINOR = 3;
     inline constexpr std::size_t PATCH = 0;
     inline constexpr auto NAME = "1.3"sv;
@@ -219,4 +219,5 @@ extern "C"  { // This block ensures C-style (unmangled) names for the linker
         gLog->flush();
         spdlog::drop_all();
     }
+
 }
