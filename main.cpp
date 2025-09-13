@@ -16,7 +16,7 @@ namespace Version
     inline constexpr std::size_t MAJOR = 0;
     inline constexpr std::size_t MINOR = 3;
     inline constexpr std::size_t PATCH = 0;
-    inline constexpr auto NAME = "1.3"sv;
+    inline constexpr auto NAME = "0.3"sv;
     inline constexpr auto AUTHORNAME = "disi"sv;
     inline constexpr auto PROJECT = "EquipSettlerCL"sv;
 }
@@ -221,3 +221,4 @@ extern "C"  { // This block ensures C-style (unmangled) names for the linker
     }
 
 }
+
