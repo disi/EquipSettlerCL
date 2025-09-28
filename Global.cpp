@@ -1,0 +1,118 @@
+#include <PCH.h>
+#include <Global.h>
+
+const char* defaultIni = R"(
+; These settings control what items this mod handles for equipping settlers
+; This affects every trunk in the game
+
+; Enable/disable debugging messages
+DEBUGGING=true
+
+; Animation settings
+; Enable/disable animation
+ANIMATION=true
+
+; --- NPC ---
+; Keywords for NPC race
+; At least one of these keywords must be present on the NPC race for it to be considered
+; The faction check is applied after this keyword check
+; You can add more keywords by copying the format below
+; very general NPC [KYWD:00013794]
+npcInclude=ActorTypeNPC
+; Any human [KYWD:0002CB72]
+npcInclude=ActorTypeHuman
+; Any ghoul [KYWD:000EAFB7]
+npcInclude=ActorTypeGhoul
+; Any super mutant [KYWD:0006D7B6]
+npcInclude=ActorTypeSuperMutant
+; Any synth [KYWD:0010C3CE]
+npcInclude=ActorTypeSynth
+
+; NPC to exclude by EditorID
+; A partial match is sufficient
+; This is evaluated before faction checks
+npcExclude=AnneHargraves
+npcExclude=DocWeathers
+npcExclude=JunLong
+npcExclude=MamaMurphy
+npcExclude=MarcyLong
+npcExclude=MinutemenRadioAnnouncer
+npcExclude=RonnieShaw
+npcExclude=Sheffield
+npcExclude=Sturges
+npcExclude=TinaDeLuca
+npcExclude=VaultTecRep
+
+; Factions for NPC
+; Only settlers that match these faction criteria will be affected by this mod
+; WorkshopNPCFaction 000337F3
+includeFaction=WorkshopNPCFaction
+; CurrentCompanionFaction 00023C01
+excludeFaction=CurrentCompanionFaction
+; PotentialCompanionFaction 001EC1B9
+excludeFaction=PotentialCompanionFaction
+
+; --- Items ---
+; The combined slotmask of head, outfit, body armor, left/right arm armor, left/right leg armor
+;maxAllowedSlotmask=0000FE09
+; all slots except power armor
+maxAllowedSlotmask=FFFFFFFF
+
+; The order in which to check the main armor slots for equipping items
+; Start with 33 (outfit) to ensure outfits are prioritized
+; Be careful adding extra slots
+; This has no effect on weapons
+slotOrder=33,30,41,42,43,44,45
+
+; Armor slots to process per settler cycle
+; Set to 1 to process one armor slot at a time for best random distribution
+; If set to 0, all armor slots will be processed at each settler cycle
+armorSlotsPerCycle=1
+
+; Keywords on armor or weapons to exclude from the mod
+; This is evaluated before the include list
+; supermutant and dog armor etc
+excludeItem=playerCannotEquip
+; PowerArmor
+excludeItem=ArmorTypePower
+
+; Keywords on armor or weapons
+; At least one of these keywords must be present on an item for it to be considered
+; Any Weapon
+includeItem=ObjectTypeWeapon
+; A very general armor keyword
+includeItem=ObjectTypeArmor
+; The individual armor parts
+includeItem=ArmorTypeHat
+includeItem=ArmorBodyPartChest
+includeItem=ArmorBodyPartHands
+includeItem=ArmorBodyPartFeet
+; Underarmor for weave
+includeItem=ma_Railroad_ClothingArmor
+; Very general clothing keyword for outfits
+includeItem=DogmeatNoVisualsOnRetrieve
+
+; FormID of specific items to exclude from the mod
+; This is evaluated last
+; Army Helmet
+;excludeFormID=00023432
+; Dirty Army Helmet
+;excludeFormID=0019CBB1
+
+; --- Objects ---
+; Keywords for settlement related objects
+; This is used to find nearby workshop objects for the animated NPC to return to
+; WorkshopBedObject [KYWD:00020596]
+workshopObject=WorkshopBedObject
+; WorkshopGuardObject [KYWD:00069548]
+workshopObject=WorkshopGuardObject
+; WorkshopWorkObject [KYWD:00020592]
+workshopObject=WorkshopWorkObject
+
+; --- Other ---
+; Ammo settings
+; Minimum ammo before refill
+ammoMin=20
+; Amount of ammo to refill
+ammoRefill=20
+)";
