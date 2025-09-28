@@ -2,12 +2,20 @@
 #include <Global.h>
 
 // Declare all functions here
+bool AdminEquipSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer);
+bool AdminStripSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer);
 RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryItem* aInventoryItem, RE::TESObjectREFR* aContainer, std::int32_t aCount);
 RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryItem* aInventoryItem, RE::TESObjectREFR* aContainer, std::uint32_t aCount);
 RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::TESBoundObject* aInventoryItem, RE::TESObjectREFR* aContainer, std::int32_t aCount);
-RE::BSTArray<RE::TESForm*> CombineArray_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2);
-void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC, std::vector<int> slots);
+RE::BSTArray<RE::TESForm*> CombineArrayForm_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2);
+RE::BSTArray<RE::TESObjectREFR*> CombineArrayObject_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray1, RE::BSTArray<RE::TESObjectREFR*> aFormArray2);
+void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC);
+void EquipBestItems_Internal(RE::TESObjectREFR* aNPC);
+void EquipBestItemsAll_Native(std::monostate, std::vector<RE::TESObjectREFR*> akNPC);
 bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem);
+RE::BSTArray<RE::TESObjectREFR*> FindAllObjectsWithAnyKeywords_Native(std::monostate, RE::TESObjectREFR* akRef, RE::BSTArray<RE::BGSKeyword*> akKeywords, float aRadius, bool shuffleResults);
+RE::BSTArray<RE::TESObjectREFR*> FindNearbyWorkshopObjects_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
+RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
 RE::BSTArray<RE::TESForm*> GetArmorItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
 RE::BSTArray<RE::TESForm*> GetArmorItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray);
 RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSInventoryItem*> itemArray);
@@ -20,22 +28,118 @@ std::int32_t GetGoldPrice_Internal(RE::TESForm* aForm);
 RE::BSTArray<RE::TESForm*> GetMatchingItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot);
 RE::BSTArray<RE::TESForm*> GetMatchingItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot);
 RE::BSTArray<RE::BGSInventoryItem*> GetMatchingItems_Internal(RE::BGSInventoryList* inventoryList, std::int32_t slot);
+template <typename T>
+std::optional<T> GetPapyrusProperty_Internal(RE::TESObjectREFR* ref, const std::string& scriptName, const std::string& propertyName);
+std::uint32_t GetSlotMaskFromIndex_Internal(std::int32_t aiSlotIndex);
 RE::BSTArray<RE::TESForm*> GetWeaponItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
 RE::BSTArray<RE::BGSInventoryItem*> GetWeaponItems_Internal(RE::BGSInventoryList* inventoryList);
 bool HasAnyKeyword_Internal(RE::TESForm* form, const std::vector<std::string>& keywords);
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::vector<std::string>& keywords);
+bool HasAnyKeyword_Internal(RE::TESForm* form, const std::unordered_set<std::string>& keywords);
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::unordered_set<std::string>& keywords);
 bool IsArmorWeapon_Native(std::monostate, RE::TESForm* aForm);
 bool IsArmorWeapon_Internal(RE::TESForm* aForm);
 bool IsArmorWeapon_Internal(RE::BGSInventoryItem* aItem);
+bool SettingDebuggingEnabled_Native(std::monostate);
+bool SettingAnimationEnabled_Native(std::monostate);
 bool IsFormIDExcluded_Internal(uint32_t formID);
-std::uint32_t GetSlotMaskFromIndex_Internal(std::int32_t aiSlotIndex);
+bool IsSettlerNPC_Native(std::monostate, RE::TESObjectREFR* aNPC);
+bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC);
 bool ItemMatchesSlot_Native(std::monostate, RE::TESObjectARMO* aArmor, std::int32_t aSlot);
-bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer, std::int32_t aSlot);
+bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
+bool ProcessNPCArmor_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
+bool PreProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
 bool ProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
+bool ProcessNPCWeapon_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
+bool PreProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
 bool SetObjectName_Native(std::monostate, RE::TESObjectREFR* aItemRef, RE::BSFixedString newName);
+RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray);
+RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Internal(RE::BSTArray<RE::TESObjectREFR*> aFormArray);
 bool StringContains_Native(std::monostate, RE::BSFixedString aString, RE::BSFixedString aSearchString);
-bool StripSettler_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
 bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOldItem, RE::TESForm* aNewItem, RE::TESObjectREFR* aContainer);
-bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::TESForm* aOldItem, RE::TESForm* aNewItem, RE::TESObjectREFR* aContainer);
+bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aOldItem, RE::BGSInventoryItem* aNewItem, RE::TESObjectREFR* aContainer);
+bool UnEquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem);
+void UpdateNPCVisual_Internal(RE::TESObjectREFR* aNPC);
+
+// bool Function AdminEquipSettlers(ObjectReference[] aNPC, ObjectReference aContainer) global native
+bool AdminEquipSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer)
+{
+    if (DEBUGGING) gLog->info("AdminEquipSettlers_Native: Function called.");
+
+    // Check the object reference
+    if (aNPCs.empty() || !aContainer) {
+        if (DEBUGGING) gLog->warn("AdminEquipSettlers_Native: NPC array is empty or container pointer is NULL. Cannot continue.");
+        return false;
+    }
+
+    if (DEBUGGING) gLog->info("AdminEquipSettlers_Native: Starting to process {} NPCs.", aNPCs.size());
+    // loop over all NPCs in the array
+    for (auto* aNPC : aNPCs) {
+        if (!aNPC) continue;
+
+        // For each slot in slotOrder, process armor
+        for (auto slot : slotOrder) {
+            ProcessNPCArmor_Internal(aNPC, aContainer);
+        }
+        // For weapon, process once
+        ProcessNPCWeapon_Internal(aNPC, aContainer);
+        // Equip best items
+        EquipBestItems_Internal(aNPC);
+        // Refresh the NPC 3D model to reflect changes
+        UpdateNPCVisual_Internal(aNPC);
+    }
+
+    if (DEBUGGING) gLog->info("AdminEquipSettlers_Native: Function finished successfully.");
+    return true;
+}
+
+// bool Function AdminStripSettlers(ObjectReference[] aNPC, ObjectReference aContainer) global native
+bool AdminStripSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer)
+{
+    // Check the object reference
+    if (aNPCs.empty() || !aContainer) {
+        if (DEBUGGING) gLog->warn("AdminStripSettlers_Native: NPC array is empty or container pointer is NULL. Cannot continue.");
+        return false;
+    }
+
+    for (auto* aNPC : aNPCs) {
+        if (!aNPC) continue;
+
+        // Get the inventory items
+        RE::BGSInventoryList* itemList = aNPC->inventoryList;
+        if (!itemList) {
+            if (DEBUGGING) gLog->warn("AdminStripSettlers_Native: NPC has no inventory list. Cannot continue.");
+            return false;
+        }
+
+        // Get a list of matching inventory items to remove
+        RE::BSTArray<RE::BGSInventoryItem*> itemsToRemove;
+        for (RE::BGSInventoryItem& currentItem : itemList->data) {
+            RE::TESBoundObject* currentObject = currentItem.object;
+            // Get the TESForm
+            RE::TESForm* currentForm = currentObject->As<RE::TESForm>();
+            // Check if Armor or Weapon
+            if (IsArmorWeapon_Internal(currentForm)) {
+                itemsToRemove.push_back(&currentItem);
+            }
+        }
+
+        if (DEBUGGING) gLog->info("AdminStripSettlers_Native: Found {} items to strip.", itemsToRemove.size());
+
+        // Go over the items to remove and transfer
+        for (RE::BGSInventoryItem* itemToStrip : itemsToRemove) {
+            if (DEBUGGING) gLog->info("AdminStripSettlers_Native: Moving item {:08X} to container, count: {}.", itemToStrip->object->formID, itemToStrip->stackData->GetCount());
+            // Move the item to the container
+            SwapItems_Internal(aNPC, itemToStrip, nullptr, aContainer);
+        }
+        // Refresh the NPC 3D model to reflect changes
+        UpdateNPCVisual_Internal(aNPC);
+    }
+
+    if (DEBUGGING) gLog->info("AdminStripSettlers_Native: Function finished successfully.");
+
+    return true;
+}
 
 // Helper to construct the RemoveItemData for the RemoveItem(RemoveItemData zData) function
 // std::int32_t
@@ -69,12 +173,6 @@ RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryI
     // Needs to be RE::ITEM_REMOVE_REASON::kStoreTeammate to work properly
     newData.reason = RE::ITEM_REMOVE_REASON::kStoreContainer;
 
-    // The stackData does not work correctly and causes no item to be transferred
-    // Correctly transfer the unique item instance data handle.
-    //if (aInventoryItem->stackData && aInventoryItem->stackData->extra) {
-        //newData.stackData.push_back(reinterpret_cast<std::uint32_t>(aInventoryItem->stackData.get()));
-    //}
-
     return newData;
 }
 
@@ -89,11 +187,6 @@ RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryI
     newData.a_otherContainer = aContainer;
     // Needs to be RE::ITEM_REMOVE_REASON::kStoreTeammate to work properly
     newData.reason = RE::ITEM_REMOVE_REASON::kStoreContainer;
-
-    // The stackData does not work correctly and causes no item to be transferred
-    //if (aInventoryItem->stackData && aInventoryItem->stackData->extra) {
-        //newData.stackData.push_back(reinterpret_cast<std::uint32_t>(aInventoryItem->stackData->extra.get()));
-    //}
 
     return newData;
 }
@@ -111,24 +204,19 @@ RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::TESBoundObjec
     // Needs to be RE::ITEM_REMOVE_REASON::kStoreTeammate to work properly
     newData.reason = RE::ITEM_REMOVE_REASON::kStoreContainer;
 
-    // The stackData does not work correctly and causes no item to be transferred
-    //if (aInventoryItem->stackData && aInventoryItem->stackData->extra) {
-        //newData.stackData.push_back(reinterpret_cast<std::uint32_t>(aInventoryItem->stackData->extra.get()));
-    //}
-
     return newData;
 }
 
 // Form[] Function CombineArray(Form[] aFormArray1, Form[] aFormArray2) global native
-RE::BSTArray<RE::TESForm*> CombineArray_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2)
+RE::BSTArray<RE::TESForm*> CombineArrayForm_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2)
 {
     RE::BSTArray<RE::TESForm*> combinedArray;
 
-    if (DEBUGGING) gLog->info("CombineArray_Native: Function called.");
+    if (DEBUGGING) gLog->info("CombineArrayForm_Native: Function called.");
 
     // Check if the first array is valid before iterating to prevent crashes on null arrays.
     if (!aFormArray1.empty() || aFormArray1.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArray_Native: Adding items from first array.");
+        if (DEBUGGING) gLog->info("CombineArrayForm_Native: Adding items from first array.");
         for (const auto& form : aFormArray1) {
             // Check for null forms inside the array to prevent crashes.
             if (form) {
@@ -139,7 +227,7 @@ RE::BSTArray<RE::TESForm*> CombineArray_Native(std::monostate, RE::BSTArray<RE::
 
     // Check if the second array is valid before iterating.
     if (!aFormArray2.empty() || aFormArray2.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArray_Native: Adding items from second array.");
+        if (DEBUGGING) gLog->info("CombineArrayForm_Native: Adding items from second array.");
         for (const auto& form : aFormArray2) {
             // Check for null forms inside the array to prevent crashes.
             if (form) {
@@ -148,23 +236,58 @@ RE::BSTArray<RE::TESForm*> CombineArray_Native(std::monostate, RE::BSTArray<RE::
         }
     }
 
-    if (DEBUGGING) gLog->info("CombineArray_Native: Combined array has {} forms.", combinedArray.size());
+    if (DEBUGGING) gLog->info("CombineArrayForm_Native: Combined array has {} forms.", combinedArray.size());
+
+    // Shuffle the array before returning it
+    std::shuffle(combinedArray.begin(), combinedArray.end(), std::mt19937{ std::random_device{}() });
 
     return combinedArray;
 }
 
-// bool Function EquipBestItems(ObjectReference akNPC, int[] slots) global native
-void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC, std::vector<int> slots)
+// Form[] Function CombineArray(Form[] aFormArray1, Form[] aFormArray2) global native
+RE::BSTArray<RE::TESObjectREFR*> CombineArrayObject_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray1, RE::BSTArray<RE::TESObjectREFR*> aFormArray2)
+{
+    RE::BSTArray<RE::TESObjectREFR*> combinedArray;
+
+    if (DEBUGGING) gLog->info("CombineArrayObject_Native: Function called.");
+
+    // Check if the first array is valid before iterating to prevent crashes on null arrays.
+    if (!aFormArray1.empty() || aFormArray1.size() == 0) {
+        if (DEBUGGING) gLog->info("CombineArrayObject_Native: Adding items from first array.");
+        for (const auto& form : aFormArray1) {
+            // Check for null forms inside the array to prevent crashes.
+            if (form) {
+                combinedArray.push_back(form);
+            }
+        }
+    }
+
+    // Check if the second array is valid before iterating.
+    if (!aFormArray2.empty() || aFormArray2.size() == 0) {
+        if (DEBUGGING) gLog->info("CombineArrayObject_Native: Adding items from second array.");
+        for (const auto& form : aFormArray2) {
+            // Check for null forms inside the array to prevent crashes.
+            if (form) {
+                combinedArray.push_back(form);
+            }
+        }
+    }
+
+    if (DEBUGGING) gLog->info("CombineArrayObject_Native: Combined array has {} forms.", combinedArray.size());
+
+    // Shuffle the array before returning it
+    std::shuffle(combinedArray.begin(), combinedArray.end(), std::mt19937{ std::random_device{}() });
+
+    return combinedArray;
+}
+
+// bool Function EquipBestItems(ObjectReference akNPC) global native
+void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC)
 {
     if (DEBUGGING) gLog->info("EquipBestItems_Native: Function called.");
 
     if (!aNPC) {
         if (DEBUGGING) gLog->warn("EquipBestItems_Native: NPC reference is null.");
-        return;
-    }
-
-    if (slots.empty() || slots.size() == 0) {
-        if (DEBUGGING) gLog->warn("EquipBestItems_Native: Slots array is empty or null.");
         return;
     }
 
@@ -176,7 +299,7 @@ void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC, std::vector<
     }
 
     // Iterate over the armor slots and equip the best item for each slot
-    for (int slot : slots) {
+    for (int slot : slotOrder) {
         RE::BSTArray<RE::BGSInventoryItem*> matchingItems = GetMatchingItems_Internal(itemList, slot);
         RE::BSTArray<RE::BGSInventoryItem*> matchingArmorItems = GetArmorItems_Internal(matchingItems);
         if (matchingArmorItems.empty() || matchingArmorItems.size() == 0) {
@@ -206,7 +329,7 @@ void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC, std::vector<
             bool hasAmmo = false;
             if (aNPC->inventoryList) {
                 for (auto& invItem : aNPC->inventoryList->data) {
-                    if (invItem.object == weapon->weaponData.ammo && invItem.stackData->GetCount() > 10) {
+                    if (invItem.object == weapon->weaponData.ammo && invItem.stackData->GetCount() >= ammoMin) {
                         hasAmmo = true;
                         break;
                     }
@@ -214,21 +337,86 @@ void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC, std::vector<
             }
             // If not, add some ammo
             if (!hasAmmo) {
-                if (DEBUGGING) gLog->info("EquipBestArmorItems_Native: Adding ammo FormID: {:08X} to NPC inventory.", weapon->weaponData.ammo->GetFormID());
-                aNPC->AddObjectToContainer(weapon->weaponData.ammo, nullptr, 10, nullptr, RE::ITEM_REMOVE_REASON::kStoreContainer);
+                if (DEBUGGING) gLog->info("EquipBestItems_Native: Adding ammo FormID: {:08X} to NPC inventory.", weapon->weaponData.ammo->GetFormID());
+                aNPC->AddObjectToContainer(weapon->weaponData.ammo, nullptr, ammoRefill, nullptr, RE::ITEM_REMOVE_REASON::kStoreContainer);
             }
         }
-        if (DEBUGGING) gLog->info("EquipBestArmorItems_Native: Equipping best weapon FormID: {:08X}.", bestItem->object->GetFormID());
+        if (DEBUGGING) gLog->info("EquipBestItems_Native: Equipping best weapon FormID: {:08X}.", bestItem->object->GetFormID());
         if (EquipInventoryItem_Internal(aNPC, bestItem)) {
-            if (DEBUGGING) gLog->info("EquipBestArmorItems_Native: Successfully equipped weapon.");
+            if (DEBUGGING) gLog->info("EquipBestItems_Native: Successfully equipped weapon.");
         } else {
-            if (DEBUGGING) gLog->warn("EquipBestArmorItems_Native: Failed to equip weapon.");
+            if (DEBUGGING) gLog->warn("EquipBestItems_Native: Failed to equip weapon.");
         }
     } else {
-        if (DEBUGGING) gLog->warn("EquipBestArmorItems_Native: No best weapon found to equip.");
+        if (DEBUGGING) gLog->warn("EquipBestItems_Native: No best weapon found to equip.");
     }
 
-    if (DEBUGGING) gLog->info("EquipBestArmorItems_Native: Function finished.");
+    if (DEBUGGING) gLog->info("EquipBestItems_Native: Function finished.");
+}
+void EquipBestItems_Internal(RE::TESObjectREFR* aNPC)
+{
+    if (!aNPC) {
+        return;
+    }
+    // Get the inventory items
+    RE::BGSInventoryList* itemList = aNPC->inventoryList;
+    if (!itemList) {
+        return;
+    }
+    // Iterate over the armor slots and equip the best item for each slot
+    for (int slot : slotOrder) {
+        RE::BSTArray<RE::BGSInventoryItem*> matchingItems = GetMatchingItems_Internal(itemList, slot);
+        RE::BSTArray<RE::BGSInventoryItem*> matchingArmorItems = GetArmorItems_Internal(matchingItems);
+        if (matchingArmorItems.empty() || matchingArmorItems.size() == 0) {
+                continue;
+        }
+        RE::BGSInventoryItem* bestItem = GetBestItem_Internal(matchingArmorItems);
+        if (!bestItem || !bestItem->object) {
+            continue;
+        }
+        EquipInventoryItem_Internal(aNPC, bestItem);
+    }
+    // equip best weapon
+    RE::BSTArray<RE::BGSInventoryItem*> weaponItems = GetWeaponItems_Internal(itemList);
+    RE::BGSInventoryItem* bestItem = GetBestItem_Internal(weaponItems);
+    if (bestItem && bestItem->object) {
+        auto weapon = bestItem->object->As<RE::TESObjectWEAP>();
+        if (weapon && weapon->weaponData.ammo) {
+            // Check if NPC has any of this ammo
+            bool hasAmmo = false;
+            if (aNPC->inventoryList) {
+                for (auto& invItem : aNPC->inventoryList->data) {
+                    if (invItem.object == weapon->weaponData.ammo && invItem.stackData->GetCount() >= ammoMin) {
+                        hasAmmo = true;
+                        break;
+                    }
+                }
+            }
+            // If not, add some ammo
+            if (!hasAmmo) {
+                aNPC->AddObjectToContainer(weapon->weaponData.ammo, nullptr, ammoRefill, nullptr, RE::ITEM_REMOVE_REASON::kStoreContainer);
+            }
+        }
+        EquipInventoryItem_Internal(aNPC, bestItem);
+    }
+}
+// bool Function EquipBestItems(ObjectReference[] akNPC) global native
+void EquipBestItemsAll_Native(std::monostate, std::vector<RE::TESObjectREFR*> akNPC)
+{
+    if (akNPC.empty() || akNPC.size() == 0) {
+        if (DEBUGGING) gLog->warn("EquipBestItemsAll_Native: Input array is empty or null. Exiting function.");
+        return;
+    }
+
+    if (DEBUGGING) gLog->info("EquipBestItemsAll_Native: Function called for {} NPC.", akNPC.size());
+
+    for (auto* npc : akNPC) {
+        if (npc) {
+            EquipBestItems_Internal(npc);
+        }
+    }
+
+    if (DEBUGGING) gLog->info("EquipBestItemsAll_Native: Function finished.");
 }
 // Helper function to equip a single inventory item to an NPC
 bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem)
@@ -251,8 +439,9 @@ bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* 
         }
     }
     if (!instanceData) {
-        if (DEBUGGING) gLog->warn("No valid instanceData found for FormID: {:08X}", aInvItem->object->GetFormID());
-        return false;
+        if (DEBUGGING) gLog->warn("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}", aInvItem->object->GetFormID());
+        validStackID = 0;
+        instanceData = nullptr;
     }
     //RE::TBO_InstanceData* instanceData = aInvItem->GetInstanceData(stackID);
     // Create object instance
@@ -278,9 +467,293 @@ bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* 
         true,           // forceEquip
         true,           // playSounds
         true,           // applyNow
-        true            // locked
+        false            // locked
     );
     return true;
+}
+
+// ObjectReference[] Function FindAllObjectsWithAnyKeywords(ObjectReference akRef, FormList akKeywords, Int aRadius) global native
+RE::BSTArray<RE::TESObjectREFR*> FindAllObjectsWithAnyKeywords_Native(std::monostate, RE::TESObjectREFR* akRef, RE::BSTArray<RE::BGSKeyword*> akKeywords, float aRadius, bool shuffleResults)
+{
+    if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Function called.");
+
+    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
+
+    if (!akRef) {
+        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: NPC reference is null.");
+        return foundObjects;
+    }
+    if (akKeywords.empty() || akKeywords.size() == 0) {
+        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: Keyword list is null or empty.");
+        return foundObjects;
+    }
+    if (aRadius <= 0.0f) {
+        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: Radius is zero or negative.");
+        return foundObjects;
+    }
+
+    // Get the worldspace and cell of the NPC
+    RE::TESObjectCELL* cell = akRef->GetParentCell();
+    if (!cell) {
+        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: NPC has no parent cell.");
+        return foundObjects;
+    }
+
+    // Get the position of the NPC
+    RE::NiPoint3 npcPosition = akRef->GetPosition();
+
+    // Get all forms in the cell
+    const auto& formsPair = cell->GetAllForms();
+    const auto* formsMap = formsPair.first;
+
+    if (!formsMap) {
+        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: No forms found in the cell.");
+        return foundObjects;
+    }
+
+    // Iterate over all forms and check for references with matching keywords within the radius
+    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
+    for (auto& entry : *formsMap) {
+        RE::TESForm* form = entry.second;
+        // early continue if form is null
+        if (!form) continue;
+        // We are only interested in references
+        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
+        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
+            continue;
+        }
+        // check distance
+        float distance = npcPosition.GetDistance(ref->GetPosition());
+        if (distance > aRadius) {
+            continue;
+        }
+        //if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Distance OK, checking keywords for reference FormID: {:08X}", ref->GetFormID());
+        // check keywords
+        RE::TESBoundObject* baseForm = ref->GetObjectReference();
+        auto keywordForm = baseForm ? baseForm->As<RE::BGSKeywordForm>() : nullptr;
+        if (!keywordForm) continue;
+        for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+            auto keyword = keywordForm->keywords[i];
+            if (!keyword) continue;
+            if (std::find(akKeywords.begin(), akKeywords.end(), keyword) != akKeywords.end()) {
+                tempObjects.emplace_back(ref, distance);
+                break;
+            }
+        }
+    }
+
+    // Sort by distance (closest first)
+    std::sort(tempObjects.begin(), tempObjects.end(),
+    [](const auto& a, const auto& b) { return a.second < b.second; });
+    // Extract sorted references
+    for (const auto& pair : tempObjects) {
+        foundObjects.push_back(pair.first);
+    }
+
+    if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Found {} matching active objects within radius {}.", foundObjects.size(), aRadius);
+
+    // Shuffle the results if requested
+    if (shuffleResults) {
+        foundObjects = ShuffleArray_Internal(foundObjects);
+    }
+
+    // Remove any null entries to prevent crashes
+    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
+
+    // Remove duplicates
+    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
+    auto it = foundObjects.begin();
+    while (it != foundObjects.end()) {
+        if (!uniqueSet.insert(*it).second) {
+            it = foundObjects.erase(it); // Duplicate found, erase
+        } else {
+            ++it;
+        }
+    }
+
+    return foundObjects;
+}
+
+// ObjectReference[] Function FindNearbyWorkshopObjects(ObjectReference akRef, Float aRadius, Bool aShuffle) global native
+RE::BSTArray<RE::TESObjectREFR*> FindNearbyWorkshopObjects_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults)
+{
+    if (DEBUGGING) gLog->info("FindNearbyWorkshopObjects_Native: Function called.");
+
+    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
+
+    if (!akRef) {
+        if (DEBUGGING) gLog->warn("FindNearbyWorkshopObjects_Native: NPC reference is null.");
+        return foundObjects;
+    }
+    if (aRadius <= 0.0f) {
+        if (DEBUGGING) gLog->warn("FindNearbyWorkshopObjects_Native: Radius is zero or negative.");
+        return foundObjects;
+    }
+
+    // Get the worldspace and cell of the NPC
+    RE::TESObjectCELL* cell = akRef->GetParentCell();
+    if (!cell) {
+        if (DEBUGGING) gLog->warn("FindNearbyWorkshopObjects_Native: NPC has no parent cell.");
+        return foundObjects;
+    }
+
+    // Get the position of the NPC
+    RE::NiPoint3 npcPosition = akRef->GetPosition();
+
+    // Get all forms in the cell
+    const auto& formsPair = cell->GetAllForms();
+    const auto* formsMap = formsPair.first;
+
+    if (!formsMap) {
+        if (DEBUGGING) gLog->warn("FindNearbyWorkshopObjects_Native: No forms found in the cell.");
+        return foundObjects;
+    }
+
+    // Iterate over all forms and check for references with matching keywords within the radius
+    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
+    for (auto& entry : *formsMap) {
+        RE::TESForm* form = entry.second;
+        // early continue if form is null
+        if (!form) continue;
+        // We are only interested in references
+        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
+        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
+            continue;
+        }
+        // check distance
+        float distance = npcPosition.GetDistance(ref->GetPosition());
+        if (distance > aRadius) {
+            continue;
+        }
+        // check keywords
+        if (!HasAnyKeyword_Internal(ref, workshopObjectKeywords)) {
+            continue;
+        }
+        // if we reach this point, we have a match
+        tempObjects.emplace_back(ref, distance);
+    }
+
+    // Sort by distance (closest first)
+    std::sort(tempObjects.begin(), tempObjects.end(),
+    [](const auto& a, const auto& b) { return a.second < b.second; });
+    // Extract sorted references
+    for (const auto& pair : tempObjects) {
+        foundObjects.push_back(pair.first);
+    }
+
+    if (DEBUGGING) gLog->info("FindNearbyWorkshopObjects_Native: Found {} matching objects within radius {}.", foundObjects.size(), aRadius);
+
+    // Shuffle the results if requested
+    if (shuffleResults) {
+        foundObjects = ShuffleArray_Internal(foundObjects);
+    }
+
+    // Remove any null entries to prevent crashes
+    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
+
+    // Remove duplicates
+    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
+    auto it = foundObjects.begin();
+    while (it != foundObjects.end()) {
+        if (!uniqueSet.insert(*it).second) {
+            it = foundObjects.erase(it); // Duplicate found, erase
+        } else {
+            ++it;
+        }
+    }
+
+    return foundObjects;
+}
+
+// ObjectReference[] Function FindSettlerNPC(ObjectReference akRef, Float aRadius, Bool aShuffle) global native
+RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults)
+{
+    if (DEBUGGING) gLog->info("FindSettlerNPC_Native: Function called.");
+
+    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
+
+    if (!akRef) {
+        if (DEBUGGING) gLog->warn("FindSettlerNPC_Native: NPC reference is null.");
+        return foundObjects;
+    }
+    if (aRadius <= 0.0f) {
+        if (DEBUGGING) gLog->warn("FindSettlerNPC_Native: Radius is zero or negative.");
+        return foundObjects;
+    }
+    // Get the worldspace and cell of the NPC
+    RE::TESObjectCELL* cell = akRef->GetParentCell();
+    if (!cell) {
+        return foundObjects;
+    }
+    // Get the position of the NPC
+    RE::NiPoint3 npcPosition = akRef->GetPosition();
+    // Get all forms in the cell
+    const auto& formsPair = cell->GetAllForms();
+    const auto* formsMap = formsPair.first;
+    if (!formsMap) {
+        return foundObjects;
+    }
+    // Iterate over all forms and check for references with matching keywords within the radius
+    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
+    for (auto& entry : *formsMap) {
+        RE::TESForm* form = entry.second;
+        // early continue if form is null
+        if (!form) continue;
+        // We are only interested in references
+        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
+        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
+            continue;
+        }
+        // check distance
+        float distance = npcPosition.GetDistance(ref->GetPosition());
+        if (distance > aRadius) {
+            continue;
+        }
+        // check the race for keywords
+        auto* actor = ref->As<RE::Actor>();
+        if (!actor) continue;
+        RE::TESRace* race = actor->race;
+        if (!HasAnyKeyword_Internal(race, npcInclude)) {
+            continue;
+        }
+        // check if settler NPC
+        if (!IsSettlerNPC_Internal(ref)) {
+            continue;
+        }
+        // if we reach this point, we have a match
+        tempObjects.emplace_back(ref, distance);
+    }
+
+    // Sort by distance (closest first)
+    std::sort(tempObjects.begin(), tempObjects.end(),
+    [](const auto& a, const auto& b) { return a.second < b.second; });
+    // Extract sorted references
+    for (const auto& pair : tempObjects) {
+        foundObjects.push_back(pair.first);
+    }
+
+    if (DEBUGGING) gLog->info("FindSettlerNPC_Native: Found {} matching active actors within radius {}.", foundObjects.size(), aRadius);
+
+    // Shuffle the results if requested
+    if (shuffleResults) {
+        foundObjects = ShuffleArray_Internal(foundObjects);
+    }
+
+    // Remove any null entries to prevent crashes
+    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
+
+    // Remove duplicates
+    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
+    auto it = foundObjects.begin();
+    while (it != foundObjects.end()) {
+        if (!uniqueSet.insert(*it).second) {
+            it = foundObjects.erase(it); // Duplicate found, erase
+        } else {
+            ++it;
+        }
+    }
+
+    return foundObjects;
 }
 
 // Form[] Function GetArmorItems(Form[] aFormArray) global native
@@ -300,6 +773,9 @@ RE::BSTArray<RE::TESForm*> GetArmorItems_Native(std::monostate, RE::BSTArray<RE:
     for (RE::TESForm* currentForm : aFormArray) {
         if (currentForm == nullptr) {
             // Skip null forms
+            continue;
+        }
+        if (!IsArmorWeapon_Internal(currentForm)) {
             continue;
         }
         // Check the Form Type
@@ -328,6 +804,9 @@ RE::BSTArray<RE::TESForm*> GetArmorItems_Internal(RE::BSTArray<RE::TESForm*> aFo
             // Skip null forms
             continue;
         }
+        if (!IsArmorWeapon_Internal(currentForm)) {
+            continue;
+        }
         // Check the Form Type
         if (currentForm->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
             armorArray.push_back(currentForm);
@@ -346,6 +825,9 @@ RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSI
         if (!currentItem || !currentItem->object) continue;
         RE::TESForm* form = currentItem->object->As<RE::TESForm>();
         if (!form) continue;
+        if (!IsArmorWeapon_Internal(form)) {
+            continue;
+        }
         if (form->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
             armorArray.push_back(currentItem);
         }
@@ -630,6 +1112,40 @@ RE::BSTArray<RE::BGSInventoryItem*> GetMatchingItems_Internal(RE::BGSInventoryLi
     return result;
 }
 
+// Helper to get a Papyrus property value from a script attached to a ref
+template <typename T>
+std::optional<T> GetPapyrusProperty_Internal(RE::TESObjectREFR* ref, const std::string& scriptName, const std::string& propertyName)
+{
+    if (!ref) return std::nullopt;
+    // Get the vm and handle
+    auto gameVM = RE::GameVM::GetSingleton();
+    auto vm = gameVM->GetVM();
+    if (!vm) return std::nullopt;
+    std::uint32_t type = static_cast<std::uint32_t>(ref->GetFormType());
+    std::size_t handle = gameVM->handlePolicy.GetHandleForObject(type, ref);
+    if (!handle) return std::nullopt;
+    // Get the script object
+    RE::BSTSmartPointer<RE::BSScript::Object> scriptObj;
+    if (vm->FindBoundObject(handle, scriptName.c_str(), true, scriptObj, false)) {
+        auto typeInfo = scriptObj->GetTypeInfo();
+        if (typeInfo) {
+            // Get the property index
+            std::uint32_t propertyIndex = typeInfo->GetPropertyIndex(propertyName);
+            if (propertyIndex && propertyIndex > 0) {
+                // Get the property value
+                RE::BSScript::Variable var;
+                if (vm->GetVariableValue(scriptObj, propertyIndex, var)) {
+                    if (var.is<T>()) {
+                        return RE::BSScript::get<T>(var);
+                    }
+                }
+            }
+        }
+    }
+    // Nothing found
+    return std::nullopt;
+}
+
 // Form[] Function GetWeaponItems(Form[] aFormArray) global native
 RE::BSTArray<RE::TESForm*> GetWeaponItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray)
 {
@@ -648,6 +1164,9 @@ RE::BSTArray<RE::TESForm*> GetWeaponItems_Native(std::monostate, RE::BSTArray<RE
         if (currentForm == nullptr) {
             // Skip null forms
             if (DEBUGGING) gLog->warn("GetWeaponItems_Native: The current Form is nullptr!");
+            continue;
+        }
+        if (!IsArmorWeapon_Internal(currentForm)) {
             continue;
         }
 
@@ -669,6 +1188,9 @@ RE::BSTArray<RE::BGSInventoryItem*> GetWeaponItems_Internal(RE::BGSInventoryList
     }
     for (RE::BGSInventoryItem& item : inventoryList->data) {
         if (!item.object) continue;
+        if (!IsArmorWeapon_Internal(item.object)) {
+            continue;
+        }
         if (item.object->GetFormType() == RE::ENUM_FORM_ID::kWEAP) {
             weaponArray.push_back(&item);
         }
@@ -676,14 +1198,84 @@ RE::BSTArray<RE::BGSInventoryItem*> GetWeaponItems_Internal(RE::BGSInventoryList
     return weaponArray;
 }
 
-// Helper function to check if an armor has keywords
+// Helper function to check if the form has any of the keywords - case insensitive
 bool HasAnyKeyword_Internal(RE::TESForm* form, const std::vector<std::string>& keywords)
 {
-    auto armor = form->As<RE::TESObjectARMO>();
-    auto weapon = form->As<RE::TESObjectWEAP>();
-    for (const auto& kw : keywords) {
-        if ((armor && armor->HasKeywordString(kw.c_str())) ||
-            (weapon && weapon->HasKeywordString(kw.c_str()))) {
+    if (!form) return false;
+    auto* keywordForm = form->As<RE::BGSKeywordForm>();
+    if (!keywordForm) return false;
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* keyword = keywordForm->keywords[i];
+        if (!keyword) continue;
+        const char* editorID = keyword->GetFormEditorID();
+        if (!editorID) continue;
+        std::string editorIDLower(editorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        for (const auto& kw : keywords) {
+            std::string kwLower(kw);
+            std::transform(kwLower.begin(), kwLower.end(), kwLower.begin(), ::tolower);
+            if (editorIDLower == kwLower) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::vector<std::string>& keywords)
+{
+    if (!aRef) return false;
+    RE::TESBoundObject* baseForm = aRef->GetObjectReference();
+    auto* keywordForm = baseForm ? baseForm->As<RE::BGSKeywordForm>() : nullptr;
+    if (!keywordForm) return false;
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* keyword = keywordForm->keywords[i];
+        if (!keyword) continue;
+        const char* editorID = keyword->GetFormEditorID();
+        if (!editorID) continue;
+        std::string editorIDLower(editorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        for (const auto& kw : keywords) {
+            std::string kwLower(kw);
+            std::transform(kwLower.begin(), kwLower.end(), kwLower.begin(), ::tolower);
+            if (editorIDLower == kwLower) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+bool HasAnyKeyword_Internal(RE::TESForm* form, const std::unordered_set<std::string>& keywords)
+{
+    if (!form) return false;
+    auto* keywordForm = form->As<RE::BGSKeywordForm>();
+    if (!keywordForm) return false;
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* keyword = keywordForm->keywords[i];
+        if (!keyword) continue;
+        const char* editorID = keyword->GetFormEditorID();
+        if (!editorID) continue;
+        std::string editorIDLower(editorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        if (keywords.find(editorIDLower) != keywords.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::unordered_set<std::string>& keywords)
+{
+    if (!aRef) return false;
+    RE::TESBoundObject* baseForm = aRef->GetObjectReference();
+    auto* keywordForm = baseForm ? baseForm->As<RE::BGSKeywordForm>() : nullptr;
+    if (!keywordForm) return false;
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* keyword = keywordForm->keywords[i];
+        if (!keyword) continue;
+        const char* editorID = keyword->GetFormEditorID();
+        if (!editorID) continue;
+        std::string editorIDLower(editorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        if (keywords.find(editorIDLower) != keywords.end()) {
             return true;
         }
     }
@@ -795,6 +1387,199 @@ bool IsFormIDExcluded_Internal(uint32_t formID) {
     return false;
 }
 
+// bool Function IsSettlerNPC(ObjectReference aNPC) global native
+bool IsSettlerNPC_Native(std::monostate, RE::TESObjectREFR* aNPC)
+{
+    if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Function called");
+
+    // Check the object reference
+    if (!aNPC) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Input NPC is NULL.");
+        return false;
+    }
+
+    auto actor = aNPC->As<RE::Actor>();
+    if (!actor) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Input NPC is not an Actor.");
+        return false;
+    }
+
+    // Pre-checks on the NPC
+    if (actor->IsDeleted()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is deleted. Ignoring.");
+        return false;
+    }
+    if (actor->IsDisabled()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is disabled. Ignoring.");
+        return false;
+    }
+    if (actor->IsDead(false)) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is dead. Ignoring.");
+        return false;
+    }
+    if (actor->IsChild()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is a child. Ignoring.");
+        return false;
+    }
+    if (actor->IsPlayer()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is the player. Ignoring.");
+        return false;
+    }
+    if (actor->IsInCombat()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is in combat. Ignoring.");
+        return false;
+    }
+    RE::Actor* player = RE::PlayerCharacter::GetSingleton();
+    if (!player) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Could not get player Actor.");
+    } else if (actor->GetHostileToActor(player)) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is hostile to the player. Ignoring.");
+        return false;
+    }
+
+    // Check if NPC's EditorID is in npcExclude
+    if (const char* actorEditorID = actor->GetFormEditorID()) {
+        //if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Found NPC FormID {:08X} with EditorID {}.", actor->formID, actorEditorID);
+        std::string editorIDLower(actorEditorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        for (const auto& excludeID : npcExclude) {
+            if (editorIDLower.find(excludeID) != std::string::npos) {
+                if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC EditorID {} is in the exclude list. Ignoring.", actorEditorID);
+                return false;
+            }
+        }
+    }
+    
+    // Get the Actor's factions
+    std::vector<std::string> factionEditorIDs;
+    auto npc = actor->GetNPC();
+    if (npc) {
+        //if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Found NPC FormID {:08X} with {} factions.", npc->formID, npc->factions.size());
+        for (auto& factionData : npc->factions) {
+            RE::TESFaction* faction = factionData.faction;
+            const char* editorID = faction ? faction->GetFormEditorID() : nullptr;
+            if (DEBUGGING && faction) {
+                //gLog->info("IsSettlerNPC_Native: Found Faction FormID {:08X} with EditorID {}.", faction->formID, faction->GetFormEditorID());
+            }
+            if (!editorID) continue;
+            factionEditorIDs.emplace_back(editorID);
+        }
+    } else {
+        return false;
+    }
+
+    // Faction checks
+    if (includeFaction.empty() || includeFaction.size() == 0) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: No faction includeFaction filter set, passing No NPCs.");
+        return false;
+    } else {
+        // Check if any of the NPC's factions are in the include list and not in the exclude list
+        bool included = includeFaction.empty();
+        for (const std::string& factionEditorID : factionEditorIDs) {
+            std::string factionEditorIDLower = factionEditorID;
+            std::transform(factionEditorIDLower.begin(), factionEditorIDLower.end(), factionEditorIDLower.begin(), ::tolower);
+            if (includeFaction.find(factionEditorIDLower) != includeFaction.end())
+                included = true;
+            if (excludeFaction.find(factionEditorIDLower) != excludeFaction.end())
+                return false;
+        }
+        if (!included) return false;
+    }
+
+    if (DEBUGGING) gLog->info("IsSettlerNPC_Native: NPC FormID {:08X} passed faction checks.", aNPC->formID);
+
+    // All tests passed
+    return true;
+}
+bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC)
+{
+    // Check the object reference
+    if (!aNPC) {
+        return false;
+    }
+    auto actor = aNPC->As<RE::Actor>();
+    if (!actor) {
+        return false;
+    }
+    // Pre-checks on the NPC
+    if (actor->IsDeleted()) {
+        return false;
+    }
+    if (actor->IsDisabled()) {
+        return false;
+    }
+    if (actor->IsDead(false)) {
+        return false;
+    }
+    if (actor->IsChild()) {
+        return false;
+    }
+    if (actor->IsPlayer()) {
+        return false;
+    }
+    if (actor->IsInCombat()) {
+        return false;
+    }
+    RE::Actor* player = RE::PlayerCharacter::GetSingleton();
+    if (!player) {
+        return false;
+    } else if (actor->GetHostileToActor(player)) {
+        return false;
+    }
+    // Check if NPC's EditorID is in npcExclude
+    if (const char* actorEditorID = actor->GetFormEditorID()) {
+        std::string editorIDLower(actorEditorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        for (const auto& excludeID : npcExclude) {
+            if (editorIDLower.find(excludeID) != std::string::npos) {
+                if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC EditorID {} is in the exclude list. Ignoring.", actorEditorID);
+                return false;
+            }
+        }
+    }
+    // Get the Actor's factions
+    std::vector<std::string> factionEditorIDs;
+    auto npc = actor->GetNPC();
+    if (npc) {
+        for (auto& factionData : npc->factions) {
+            RE::TESFaction* faction = factionData.faction;
+            const char* editorID = faction ? faction->GetFormEditorID() : nullptr;
+            if (DEBUGGING && faction) {
+            }
+            if (!editorID) continue;
+            factionEditorIDs.emplace_back(editorID);
+        }
+    } else {
+        return false;
+    }
+    // Faction checks
+    if (includeFaction.empty() || includeFaction.size() == 0) {
+        return false;
+    } else {
+        // Check if any of the NPC's factions are in the include list and not in the exclude list
+        bool included = includeFaction.empty();
+        for (const std::string& factionEditorID : factionEditorIDs) {
+            std::string factionEditorIDLower = factionEditorID;
+            std::transform(factionEditorIDLower.begin(), factionEditorIDLower.end(), factionEditorIDLower.begin(), ::tolower);
+            if (includeFaction.find(factionEditorIDLower) != includeFaction.end())
+                included = true;
+            if (excludeFaction.find(factionEditorIDLower) != excludeFaction.end())
+                return false;
+        }
+        if (!included) return false;
+    }
+
+    // This NPC is in the correct factions and should have a WorkshopNPCScript attached
+    bool bIsGuard = GetPapyrusProperty_Internal<bool>(aNPC, "WorkshopNPCScript", "bIsGuard").value_or(false);
+    if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: Retrieved bIsGuard value: {} for NPC FormID {:08X}.", bIsGuard, aNPC->formID);
+    // This is not working yet
+    //int workshopID = GetPapyrusProperty_Internal<int>(aNPC, "WorkshopNPCScript", "workshopID").value_or(0);
+    //if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: Retrieved workshopID value: {} for NPC FormID {:08X}.", workshopID, aNPC->formID);
+
+    // All tests passed
+    return true;
+}
+
 // bool Function ItemMatchesSlot(Armor aArmor, Int aSlot) global native
 bool ItemMatchesSlot_Native(std::monostate, RE::TESObjectARMO* aArmor, std::int32_t aSlot)
 {
@@ -812,14 +1597,14 @@ bool ItemMatchesSlot_Native(std::monostate, RE::TESObjectARMO* aArmor, std::int3
     return false;
 }
 
-// bool Function ProcessNPCArmor(ObjectReference aNPC, ObjectReference aContainer, Int aSlot) global native
-bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer, std::int32_t aSlot)
+// bool Function ProcessNPCArmor(ObjectReference aNPC, ObjectReference aContainer) global native
+bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
 {
-    if (DEBUGGING) gLog->info("ProcessNPCArmor: Function called");
+    if (DEBUGGING) gLog->info("ProcessNPCArmor_Native: Function called");
 
     // Check the object reference
     if (!aNPC || !aContainer) {
-        if (DEBUGGING) gLog->warn("ProcessNPCArmor: aNPC or aContainer pointers is NULL. Cannot continue.");
+        if (DEBUGGING) gLog->warn("ProcessNPCArmor_Native: aNPC or aContainer pointers is NULL. Cannot continue.");
         return false;
     }
 
@@ -827,45 +1612,132 @@ bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObje
     RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
     RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
     if (!npcInventory || !containerInventory) {
-        if (DEBUGGING) gLog->warn("ProcessNPCArmor: Missing inventory list(s).");
+        if (DEBUGGING) gLog->warn("ProcessNPCArmor_Native: Missing inventory list(s).");
         return false;
     }
 
-    // Get matching armor items for the slot
-    auto npcMatchingArmor = GetMatchingItems_Internal(npcInventory, aSlot);
-    auto containerMatchingArmor = GetMatchingItems_Internal(containerInventory, aSlot);
+    // Iterate over each slot in the defined order
+    bool anySwapped = false;
+    int swapped = 0;
+    for (int slot : slotOrder) {
+        auto npcMatchingArmor = GetMatchingItems_Internal(npcInventory, slot);
+        auto containerMatchingArmor = GetMatchingItems_Internal(containerInventory, slot);
+        if (npcMatchingArmor.empty() && containerMatchingArmor.empty()) {
+            if (DEBUGGING) gLog->info("ProcessNPCArmor_Native: No matching armor found for slot {}. Skipping.", slot);
+            continue;
+        }
+        RE::BGSInventoryItem* bestNpcArmor = GetBestItem_Internal(npcMatchingArmor);
+        RE::BGSInventoryItem* bestContainerArmor = GetBestItem_Internal(containerMatchingArmor);
 
-    // Find best armor in each
-    RE::BGSInventoryItem* bestNpcArmor = GetBestItem_Internal(npcMatchingArmor);
-    RE::BGSInventoryItem* bestContainerArmor = GetBestItem_Internal(containerMatchingArmor);
-
-    // Get their values
-    int npcArmorValue = bestNpcArmor ? GetGoldPrice_Internal(bestNpcArmor->object) : 0;
-    int containerArmorValue = bestContainerArmor ? GetGoldPrice_Internal(bestContainerArmor->object) : 0;
-
-    // Decide if swap is needed
-    if (bestContainerArmor && (containerArmorValue > npcArmorValue || !bestNpcArmor)) {
-        // Use SwapItems_Internal for robust swapping
-        RE::TESForm* oldItemForm = bestNpcArmor ? bestNpcArmor->object->As<RE::TESForm>() : nullptr;
-        RE::TESForm* newItemForm = bestContainerArmor->object->As<RE::TESForm>();
-        bool swapResult = SwapItems_Internal(aNPC, oldItemForm, newItemForm, aContainer);
-        if (DEBUGGING) gLog->info("ProcessNPCArmor: Swapped armor items for slot {} using SwapItems_Internal", aSlot);
-        return swapResult;
+        int npcArmorValue = bestNpcArmor ? GetGoldPrice_Internal(bestNpcArmor->object) : 0;
+        int containerArmorValue = bestContainerArmor ? GetGoldPrice_Internal(bestContainerArmor->object) : 0;
+        // Decide if swap is needed
+        if (bestContainerArmor && (containerArmorValue > npcArmorValue || !bestNpcArmor)) {
+            bool swapResult = SwapItems_Internal(aNPC, bestNpcArmor, bestContainerArmor, aContainer);
+            if (DEBUGGING) gLog->info("ProcessNPCArmor_Native: Swapped armor items for slot {} using SwapItems_Internal", slot);
+            if (armorSlotsPerCycle == 1) {
+                return swapResult;
+            }
+            if (swapResult) {
+                swapped++;
+                anySwapped = true;
+                if (swapped >= armorSlotsPerCycle && armorSlotsPerCycle > 0) {
+                    if (DEBUGGING) gLog->info("ProcessNPCArmor_Native: Reached armorSlotsPerCycle of {}. Ending processing.", armorSlotsPerCycle);
+                    return true;
+                }
+            }
+        }
     }
 
+    if (DEBUGGING) gLog->info("ProcessNPCArmor_Native: Cycle for all slots finished, Did a swap occur: {}", anySwapped);
+    return anySwapped;
+}
+bool ProcessNPCArmor_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
+{
+    // Check the object reference
+    if (!aNPC || !aContainer) {
+        return false;
+    }
+    // Get NPC inventory and container inventory
+    RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
+    RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
+    if (!npcInventory || !containerInventory) {
+        return false;
+    }
+    // Iterate over each slot in the defined order
+    bool anySwapped = false;
+    int swapped = 0;
+    for (int slot : slotOrder) {
+        auto npcMatchingArmor = GetMatchingItems_Internal(npcInventory, slot);
+        auto containerMatchingArmor = GetMatchingItems_Internal(containerInventory, slot);
+        if (npcMatchingArmor.empty() && containerMatchingArmor.empty()) {
+            continue;
+        }
+        RE::BGSInventoryItem* bestNpcArmor = GetBestItem_Internal(npcMatchingArmor);
+        RE::BGSInventoryItem* bestContainerArmor = GetBestItem_Internal(containerMatchingArmor);
+        int npcArmorValue = bestNpcArmor ? GetGoldPrice_Internal(bestNpcArmor->object) : 0;
+        int containerArmorValue = bestContainerArmor ? GetGoldPrice_Internal(bestContainerArmor->object) : 0;
+        // Decide if swap is needed
+        if (bestContainerArmor && (containerArmorValue > npcArmorValue || !bestNpcArmor)) {
+            bool swapResult = SwapItems_Internal(aNPC, bestNpcArmor, bestContainerArmor, aContainer);
+            if (armorSlotsPerCycle == 1) {
+                return swapResult;
+            }
+            if (swapResult) {
+                swapped++;
+                anySwapped = true;
+                if (swapped >= armorSlotsPerCycle && armorSlotsPerCycle > 0) {
+                    return true;
+                }
+            }
+        }
+    }
+    return anySwapped;
+}
+bool PreProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
+{
+    if (DEBUGGING) gLog->info("PreProcessNPCArmor_Native: Function called");
+
+    // Check the object reference
+    if (!aNPC || !aContainer) {
+        return false;
+    }
+    // Get NPC inventory and container inventory
+    RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
+    RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
+    if (!npcInventory || !containerInventory) {
+        return false;
+    }
+    // Iterate over each slot in the defined order
+    for (int slot : slotOrder) {
+        auto npcMatchingArmor = GetMatchingItems_Internal(npcInventory, slot);
+        auto containerMatchingArmor = GetMatchingItems_Internal(containerInventory, slot);
+        if (npcMatchingArmor.empty() && containerMatchingArmor.empty()) {
+            continue;
+        }
+        RE::BGSInventoryItem* bestNpcArmor = GetBestItem_Internal(npcMatchingArmor);
+        RE::BGSInventoryItem* bestContainerArmor = GetBestItem_Internal(containerMatchingArmor);
+        int npcArmorValue = bestNpcArmor ? GetGoldPrice_Internal(bestNpcArmor->object) : 0;
+        int containerArmorValue = bestContainerArmor ? GetGoldPrice_Internal(bestContainerArmor->object) : 0;
+        // Decide if swap is needed
+        if (bestContainerArmor && (containerArmorValue > npcArmorValue || !bestNpcArmor)) {
+            // Return true that a swap is needed
+            return true;
+        }
+    }
     // No swap needed
-    if (DEBUGGING) gLog->info("ProcessNPCArmor: No swap needed for slot {}", aSlot);
+    if (DEBUGGING) gLog->info("PreProcessNPCArmor_Native: No swap needed for any slot.");
     return false;
 }
 
-// bool Function ProcessNPCArmor(ObjectReference aNPC, ObjectReference aContainer, Int aSlot) global native
+// bool Function ProcessNPCArmor(ObjectReference aNPC, ObjectReference aContainer) global native
 bool ProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
 {
-    if (DEBUGGING) gLog->info("ProcessNPCWeapon: Function called");
+    if (DEBUGGING) gLog->info("ProcessNPCWeapon_Native: Function called");
 
     // Check the object reference
     if (!aNPC || !aContainer) {
-        if (DEBUGGING) gLog->warn("ProcessNPCWeapon: aNPC or aContainer pointers is NULL. Cannot continue.");
+        if (DEBUGGING) gLog->warn("ProcessNPCWeapon_Native: aNPC or aContainer pointers is NULL. Cannot continue.");
         return false;
     }
 
@@ -873,7 +1745,7 @@ bool ProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObj
     RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
     RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
     if (!npcInventory || !containerInventory) {
-        if (DEBUGGING) gLog->warn("ProcessNPCWeapon: Missing inventory list(s).");
+        if (DEBUGGING) gLog->warn("ProcessNPCWeapon_Native: Missing inventory list(s).");
         return false;
     }
 
@@ -892,15 +1764,79 @@ bool ProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObj
     // Decide if swap is needed
     if (bestContainerWeapon && (containerWeaponValue > npcWeaponValue || !bestNpcWeapon)) {
         // Use SwapItems_Internal for robust swapping
-        RE::TESForm* oldItemForm = bestNpcWeapon ? bestNpcWeapon->object->As<RE::TESForm>() : nullptr;
-        RE::TESForm* newItemForm = bestContainerWeapon->object->As<RE::TESForm>();
-        bool swapResult = SwapItems_Internal(aNPC, oldItemForm, newItemForm, aContainer);
-        if (DEBUGGING) gLog->info("ProcessNPCWeapon: Swapped weapon items using SwapItems_Internal.");
+        bool swapResult = SwapItems_Internal(aNPC, bestNpcWeapon, bestContainerWeapon, aContainer);
+        if (DEBUGGING) gLog->info("ProcessNPCWeapon_Native: Swapped weapon items using SwapItems_Internal.");
         return swapResult;
     }
 
     // No swap needed
-    if (DEBUGGING) gLog->info("ProcessNPCWeapon: No swap needed.");
+    if (DEBUGGING) gLog->info("ProcessNPCWeapon_Native: No swap needed.");
+    return false;
+}
+bool ProcessNPCWeapon_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
+{
+    // Check the object reference
+    if (!aNPC || !aContainer) {
+        return false;
+    }
+    // Get NPC inventory and container inventory
+    RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
+    RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
+    if (!npcInventory || !containerInventory) {
+        return false;
+    }
+    // Get all weapon items
+    auto npcInventoryWeapons = GetWeaponItems_Internal(npcInventory);
+    auto containerInventoryWeapons = GetWeaponItems_Internal(containerInventory);
+    // Find best weapon in each
+    RE::BGSInventoryItem* bestNpcWeapon = GetBestItem_Internal(npcInventoryWeapons);
+    RE::BGSInventoryItem* bestContainerWeapon = GetBestItem_Internal(containerInventoryWeapons);
+    // Get their values
+    int npcWeaponValue = bestNpcWeapon ? GetGoldPrice_Internal(bestNpcWeapon->object) : 0;
+    int containerWeaponValue = bestContainerWeapon ? GetGoldPrice_Internal(bestContainerWeapon->object) : 0;
+    // Decide if swap is needed
+    if (bestContainerWeapon && (containerWeaponValue > npcWeaponValue || !bestNpcWeapon)) {
+        // Use SwapItems_Internal for robust swapping
+        bool swapResult = SwapItems_Internal(aNPC, bestNpcWeapon, bestContainerWeapon, aContainer);
+        return swapResult;
+    }
+    // No swap needed
+    return false;
+}
+bool PreProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
+{
+    if (DEBUGGING) gLog->info("PreProcessNPCWeapon_Native: Function called");
+
+    // Check the object reference
+    if (!aNPC || !aContainer) {
+        return false;
+    }
+    // Get NPC inventory and container inventory
+    RE::BGSInventoryList* npcInventory = aNPC->inventoryList;
+    RE::BGSInventoryList* containerInventory = aContainer->inventoryList;
+    if (!npcInventory || !containerInventory) {
+        return false;
+    }
+    // Get all weapon items
+    auto npcInventoryWeapons = GetWeaponItems_Internal(npcInventory);
+    auto containerInventoryWeapons = GetWeaponItems_Internal(containerInventory);
+    // If either inventory has no weapons, skip processing
+    if (npcInventoryWeapons.empty() || containerInventoryWeapons.empty()) {
+        return false;
+    }
+    // Find best weapon in each
+    RE::BGSInventoryItem* bestNpcWeapon = GetBestItem_Internal(npcInventoryWeapons);
+    RE::BGSInventoryItem* bestContainerWeapon = GetBestItem_Internal(containerInventoryWeapons);
+    // Get their values
+    int npcWeaponValue = bestNpcWeapon ? GetGoldPrice_Internal(bestNpcWeapon->object) : 0;
+    int containerWeaponValue = bestContainerWeapon ? GetGoldPrice_Internal(bestContainerWeapon->object) : 0;
+    // Decide if swap is needed
+    if (bestContainerWeapon && (containerWeaponValue > npcWeaponValue || !bestNpcWeapon)) {
+        // Return true that a swap is needed
+        return true;
+    }
+    // No swap needed
+    if (DEBUGGING) gLog->info("PreProcessNPCWeapon_Native: No swap needed.");
     return false;
 }
 
@@ -935,6 +1871,36 @@ bool SetObjectName_Native(std::monostate, RE::TESObjectREFR* aItemRef, RE::BSFix
     return true;
 }
 
+// bool Function SettingDebuggingEnabled() global native
+bool SettingDebuggingEnabled_Native(std::monostate)
+{
+    return DEBUGGING;
+}
+
+// bool Function SettingAnimationEnabled() global native
+bool SettingAnimationEnabled_Native(std::monostate)
+{
+    return ANIMATION;
+}
+
+// ObjectReference[] Function ShuffleArray(ObjectReference[] aFormArray) global native
+RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray)
+{
+    // shuffle the array using a random device
+    static std::random_device rd;
+    static std::mt19937 g(rd());
+    std::shuffle(aFormArray.begin(), aFormArray.end(), g);
+    return aFormArray;
+}
+RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Internal(RE::BSTArray<RE::TESObjectREFR*> aFormArray)
+{
+    // shuffle the array using a random device
+    static std::random_device rd;
+    static std::mt19937 g(rd());
+    std::shuffle(aFormArray.begin(), aFormArray.end(), g);
+    return aFormArray;
+}
+
 // Bool Function StringContains(string aString, string aSearchString) global native
 bool StringContains_Native(std::monostate, RE::BSFixedString aString, RE::BSFixedString aSearchString)
 {
@@ -946,54 +1912,6 @@ bool StringContains_Native(std::monostate, RE::BSFixedString aString, RE::BSFixe
     }
 
     return aString.contains(aSearchString);
-}
-
-// bool Function StripSettler(ObjectReference aNPC, ObjectReference aContainer) global native
-bool StripSettler_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer)
-{
-    // Check the object reference
-    if (!aNPC || !aContainer) {
-        if (DEBUGGING) gLog->warn("StripSettler_Native: aNPC or aContainer pointers is NULL. Cannot continue.");
-        return false;
-    }
-
-    // Get the inventory items
-    RE::BGSInventoryList* itemList = aNPC->inventoryList;
-    if (!itemList) {
-        if (DEBUGGING) gLog->warn("StripSettler_Native: NPC has no inventory list. Cannot continue.");
-        return false;
-    }
-
-    // uneqip all items first
-    // This is problematic as it also removes power armor and clothing, which will not be re-equipped by this mod
-    //aNPC->RemoveAllObjectsWorn();
-
-    // Get a list of matching inventory items to remove
-    RE::BSTArray<RE::BGSInventoryItem*> itemsToRemove;
-    for (RE::BGSInventoryItem& currentItem : itemList->data) {
-        RE::TESBoundObject* currentObject = currentItem.object;
-        // Get the TESForm
-        RE::TESForm* currentForm = currentObject->As<RE::TESForm>();
-        // Check if Armor or Weapon
-        if (IsArmorWeapon_Internal(currentForm)) {
-            itemsToRemove.push_back(&currentItem);
-        }
-    }
-
-    if (DEBUGGING) gLog->info("StripSettler_Native: Found {} items to strip.", itemsToRemove.size());
-
-    // Go over the items to remove and transfer
-    for (RE::BGSInventoryItem* itemToStrip : itemsToRemove) {
-        if (DEBUGGING) gLog->info("StripSettler_Native: Moving item {:08X} to container, count: {}.", itemToStrip->object->formID, itemToStrip->stackData->GetCount());
-        // Build the RemoveItemData
-        RE::TESObjectREFR::RemoveItemData newData = BuildRemoveItemData_Internal(itemToStrip, aContainer, itemToStrip->stackData->GetCount());
-        // Move the item
-        aNPC->RemoveItem(newData);
-    }
-
-    if (DEBUGGING) gLog->info("StripSettler_Native: Function finished successfully.");
-
-    return true;
 }
 
 // bool Function SwapItems(ObjectReference aNPC, Form aOldItem, Form aNewItem, ObjectReference aContainer) global native
@@ -1022,6 +1940,8 @@ bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOld
     aContainer->RemoveItem(newItemRemoveItemData);
     if (DEBUGGING) gLog->info("SwapItems_Native: Moved new item from the container to the NPC, FormID: {:08X}", aNewItem->formID);
     if (aOldItem) {
+        // Unequip the old item first
+        UnEquipInventoryItem_Internal(aNPC, aOldItem->As<RE::BGSInventoryItem>());
         // aOldItem: aNPC -> aContainer
         oldItemObject = aOldItem->As<RE::TESBoundObject>();
         RE::TESObjectREFR::RemoveItemData oldItemRemoveItemData = BuildRemoveItemData_Internal(oldItemObject, aContainer, 1);
@@ -1033,40 +1953,110 @@ bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOld
 
     return true;
 }
-bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::TESForm* aOldItem, RE::TESForm* aNewItem, RE::TESObjectREFR* aContainer)
+bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aOldItem, RE::BGSInventoryItem* aNewItem, RE::TESObjectREFR* aContainer)
 {
     // Check the object reference
     if (!aNPC || !aContainer) {
-        return false;
-    }
-    // Check the object reference
-    if (!aNewItem) {
         return false;
     }
     // Declare the objects
     RE::TESBoundObject* newItemObject = nullptr;
     RE::TESBoundObject* oldItemObject = nullptr;
     // Move the items
-    // aNewItem: aContainer -> aNPC
-    newItemObject = aNewItem->As<RE::TESBoundObject>();
-    RE::TESObjectREFR::RemoveItemData newItemRemoveItemData = BuildRemoveItemData_Internal(newItemObject, aNPC, 1);
-    aContainer->RemoveItem(newItemRemoveItemData);
+    if (aNewItem) {
+        // aNewItem: aContainer -> aNPC
+        newItemObject = aNewItem->object;
+        RE::TESObjectREFR::RemoveItemData newItemRemoveItemData = BuildRemoveItemData_Internal(newItemObject, aNPC, 1);
+        aContainer->RemoveItem(newItemRemoveItemData);
+    }
     if (aOldItem) {
+        // Unequip the old item first
+        UnEquipInventoryItem_Internal(aNPC, aOldItem);
         // aOldItem: aNPC -> aContainer
-        oldItemObject = aOldItem->As<RE::TESBoundObject>();
+        oldItemObject = aOldItem->object;
         RE::TESObjectREFR::RemoveItemData oldItemRemoveItemData = BuildRemoveItemData_Internal(oldItemObject, aContainer, 1);
         aNPC->RemoveItem(oldItemRemoveItemData);
     }
     return true;
 }
 
-// Register all Papyrus functions
+// Helper function to equip a single inventory item to an NPC
+bool UnEquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem)
+{
+    if (!aInvItem || !aInvItem->object || !aNPC) return false;
+    // Last check to ensure the item is an armor or weapon
+    if (!IsArmorWeapon_Internal(aInvItem->object)) return false;
+    // Get the actor from the reference
+    RE::Actor* actor = aNPC->As<RE::Actor>();
+    if (!actor)
+        return false;
+    // Get instance data and stack ID
+    RE::TBO_InstanceData* instanceData = nullptr;
+    std::uint32_t validStackID = 0;
+    for (std::uint32_t i = 0; i < aInvItem->stackData->count; ++i) {
+        instanceData = aInvItem->GetInstanceData(i);
+        if (instanceData) {
+            validStackID = i;
+            break;
+        }
+    }
+    if (!instanceData) {
+        if (DEBUGGING) gLog->warn("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}. Attempt to equip to the default slot.", aInvItem->object->GetFormID());
+        validStackID = 0;
+        instanceData = nullptr;
+    }
+    //RE::TBO_InstanceData* instanceData = aInvItem->GetInstanceData(stackID);
+    // Create object instance
+    RE::BGSObjectInstance objInstance(aInvItem->object, instanceData);
+    // Determine equip slot (armor or weapon)
+    const RE::BGSEquipSlot* equipSlot = nullptr;
+    if (aInvItem->object->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
+        auto armor = aInvItem->object->As<RE::TESObjectARMO>();
+        equipSlot = armor ? armor->equipSlot : nullptr;
+    } else if (aInvItem->object->GetFormType() == RE::ENUM_FORM_ID::kWEAP) {
+        auto weapon = aInvItem->object->As<RE::TESObjectWEAP>();
+        equipSlot = weapon ? weapon->equipSlot : nullptr;
+    }
+    // Equip using ActorEquipManager
+    auto* equipMgr = RE::ActorEquipManager::GetSingleton();
+    equipMgr->UnequipObject(
+        actor,
+        &objInstance,   // pointer
+        1,              // count
+        equipSlot,      // slot (nullptr for weapons)
+        validStackID,   // stackID
+        false,          // queueEquip
+        true,           // forceEquip
+        false,          // playSound
+        true,           // applyNow
+        nullptr         // slotbeingReplaced
+    );
+    return true;
+}
+
+// Helper function to refresh NPC visual appearance
+void UpdateNPCVisual_Internal(RE::TESObjectREFR* aNPC)
+{
+    if (!aNPC) return;
+    RE::Actor* actor = aNPC->As<RE::Actor>();
+    if (!actor) return;
+    actor->Reset3D(/*reloadAll=*/false, /*additionalFlags=*/0, /*queueReset=*/true, /*excludeFlags=*/0);
+}
+
 bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
     if (DEBUGGING) gLog->info("RegisterPapyrusFunctions: Attempting to register Papyrus functions. VM pointer: {}", static_cast<const void*>(vm));
 
     // vm->BindNativeMethod("<Name of the script binding the function>", "<Name of the function in Papyrus>", <Name of the function in F4SE>, <can run parallel to Papyrus>);
-    vm->BindNativeMethod("ES_API", "CombineArray", CombineArray_Native, true);
+    
+    vm->BindNativeMethod("ES_API", "AdminEquipSettlers", AdminEquipSettlers_Native, true);
+    vm->BindNativeMethod("ES_API", "AdminStripSettlers", AdminStripSettlers_Native, true);
+    vm->BindNativeMethod("ES_API", "CombineArrayForm", CombineArrayForm_Native, true);
+    vm->BindNativeMethod("ES_API", "CombineArrayObject", CombineArrayObject_Native, true);
     vm->BindNativeMethod("ES_API", "EquipBestItems", EquipBestItems_Native, true);
+    vm->BindNativeMethod("ES_API", "EquipBestItemsAll", EquipBestItemsAll_Native, true);
+    vm->BindNativeMethod("ES_API", "FindAllObjectsWithAnyKeywords", FindAllObjectsWithAnyKeywords_Native, true);
+    vm->BindNativeMethod("ES_API", "FindNearbyWorkshopObjects", FindNearbyWorkshopObjects_Native, true);
+    vm->BindNativeMethod("ES_API", "FindSettlerNPC", FindSettlerNPC_Native, true);
     vm->BindNativeMethod("ES_API", "GetArmorItems", GetArmorItems_Native, true);
     vm->BindNativeMethod("ES_API", "GetBestArmor", GetBestArmor_Native, true);
     vm->BindNativeMethod("ES_API", "GetBestWeapon", GetBestWeapon_Native, true);
@@ -1074,12 +2064,17 @@ bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
     vm->BindNativeMethod("ES_API", "GetMatchingItems", GetMatchingItems_Native, true);
     vm->BindNativeMethod("ES_API", "GetWeaponItems", GetWeaponItems_Native, true);
     vm->BindNativeMethod("ES_API", "IsArmorWeapon", IsArmorWeapon_Native, true);
+    vm->BindNativeMethod("ES_API", "IsSettlerNPC", IsSettlerNPC_Native, true);
     vm->BindNativeMethod("ES_API", "ItemMatchesSlot", ItemMatchesSlot_Native, true);
     vm->BindNativeMethod("ES_API", "ProcessNPCArmor", ProcessNPCArmor_Native, true);
+    vm->BindNativeMethod("ES_API", "PreProcessNPCArmor", PreProcessNPCArmor_Native, true);
     vm->BindNativeMethod("ES_API", "ProcessNPCWeapon", ProcessNPCWeapon_Native, true);
+    vm->BindNativeMethod("ES_API", "PreProcessNPCWeapon", PreProcessNPCWeapon_Native, true);
     vm->BindNativeMethod("ES_API", "SetObjectName", SetObjectName_Native, true);
+    vm->BindNativeMethod("ES_API", "SettingDebuggingEnabled", SettingDebuggingEnabled_Native, true);
+    vm->BindNativeMethod("ES_API", "SettingAnimationEnabled", SettingAnimationEnabled_Native, true);
+    vm->BindNativeMethod("ES_API", "ShuffleArray", ShuffleArray_Native, true);
     vm->BindNativeMethod("ES_API", "StringContains", StringContains_Native, true);
-    vm->BindNativeMethod("ES_API", "StripSettler", StripSettler_Native, true);
     vm->BindNativeMethod("ES_API", "SwapItems", SwapItems_Native, true);
 
     if (DEBUGGING) gLog->info("RegisterPapyrusFunctions: All Papyrus functions registration attempts completed.");
