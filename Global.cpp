@@ -9,8 +9,9 @@ const char* defaultIni = R"(
 DEBUGGING=true
 
 ; Animation settings
-; Enable/disable animation
-ANIMATION=true
+; Enable/disable animation for running to the trunk and back
+; This is beta and may not work in all situations
+ANIMATION=false
 
 ; --- NPC ---
 ; Keywords for NPC race
@@ -31,9 +32,19 @@ npcInclude=ActorTypeSynth
 ; NPC to exclude by EditorID
 ; A partial match is sufficient
 ; This is evaluated before faction checks
+npcExclude=AbigailFinch
+npcExclude=AbrahamFinch
 npcExclude=AnneHargraves
+npcExclude=BlakeAbernathy
+npcExclude=ConnieAbernathy
+npcExclude=DanielFinch
+npcExclude=Deirdre
 npcExclude=DocWeathers
+npcExclude=JacobOrden
+npcExclude=JuneWarwick
 npcExclude=JunLong
+npcExclude=Kessler
+npcExclude=LucyAbernathy
 npcExclude=MamaMurphy
 npcExclude=MarcyLong
 npcExclude=MinutemenRadioAnnouncer
@@ -42,6 +53,7 @@ npcExclude=Sheffield
 npcExclude=Sturges
 npcExclude=TinaDeLuca
 npcExclude=VaultTecRep
+npcExclude=Wiseman
 
 ; Factions for NPC
 ; Only settlers that match these faction criteria will be affected by this mod

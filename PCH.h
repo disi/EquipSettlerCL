@@ -1,4 +1,3 @@
-// src/PCH.h
 #pragma once
 
 // Logging
@@ -53,6 +52,9 @@ using namespace std::literals;
 #include "RE/Bethesda/BSScript/TypeInfo.h"
 #include "RE/Bethesda/BSScript/Variable.h"
 #include "RE/Bethesda/BSTSmartPointer.h"
+#include "RE/Bethesda/BSTEvent.h"
+#include "RE/Bethesda/Events.h"
+#include "RE/Bethesda/InputEvent.h"
 
 
 // --- Windows ---

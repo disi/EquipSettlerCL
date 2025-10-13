@@ -13,9 +13,11 @@ void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC);
 void EquipBestItems_Internal(RE::TESObjectREFR* aNPC);
 void EquipBestItemsAll_Native(std::monostate, std::vector<RE::TESObjectREFR*> akNPC);
 bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem);
+RE::BSTArray<RE::TESObjectREFR*> FilterSettlers_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray, std::int32_t aChestTypePass, bool aShuffle);
 RE::BSTArray<RE::TESObjectREFR*> FindAllObjectsWithAnyKeywords_Native(std::monostate, RE::TESObjectREFR* akRef, RE::BSTArray<RE::BGSKeyword*> akKeywords, float aRadius, bool shuffleResults);
 RE::BSTArray<RE::TESObjectREFR*> FindNearbyWorkshopObjects_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
 RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
+RE::BSTArray<RE::TESObjectREFR*> FindSettlerTrunk_Native(std::monostate, float aRadius);
 RE::BSTArray<RE::TESForm*> GetArmorItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
 RE::BSTArray<RE::TESForm*> GetArmorItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray);
 RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSInventoryItem*> itemArray);
@@ -37,6 +39,7 @@ bool HasAnyKeyword_Internal(RE::TESForm* form, const std::vector<std::string>& k
 bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::vector<std::string>& keywords);
 bool HasAnyKeyword_Internal(RE::TESForm* form, const std::unordered_set<std::string>& keywords);
 bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::unordered_set<std::string>& keywords);
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::string& keyword);
 bool IsArmorWeapon_Native(std::monostate, RE::TESForm* aForm);
 bool IsArmorWeapon_Internal(RE::TESForm* aForm);
 bool IsArmorWeapon_Internal(RE::BGSInventoryItem* aItem);
@@ -119,7 +122,7 @@ bool AdminStripSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> a
             // Get the TESForm
             RE::TESForm* currentForm = currentObject->As<RE::TESForm>();
             // Check if Armor or Weapon
-            if (IsArmorWeapon_Internal(currentForm)) {
+            if (IsArmorWeapon_Internal(&currentItem)) {
                 itemsToRemove.push_back(&currentItem);
             }
         }
@@ -423,7 +426,7 @@ bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* 
 {
     if (!aInvItem || !aInvItem->object || !aNPC) return false;
     // Last check to ensure the item is an armor or weapon
-    if (!IsArmorWeapon_Internal(aInvItem->object)) return false;
+    if (!IsArmorWeapon_Internal(aInvItem)) return false;
     // Get the actor from the reference
     RE::Actor* actor = aNPC->As<RE::Actor>();
     if (!actor)
@@ -439,7 +442,7 @@ bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* 
         }
     }
     if (!instanceData) {
-        if (DEBUGGING) gLog->warn("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}", aInvItem->object->GetFormID());
+        if (DEBUGGING) gLog->info("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}. UUsing default.", aInvItem->object->GetFormID());
         validStackID = 0;
         instanceData = nullptr;
     }
@@ -470,6 +473,81 @@ bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* 
         false            // locked
     );
     return true;
+}
+
+// ObjectReference[] Function FilterSettlers(ObjectReference[] aFormArray, Int aChestTypePass, Bool aShuffle) global native
+RE::BSTArray<RE::TESObjectREFR*> FilterSettlers_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray, std::int32_t aChestTypePass, bool aShuffle)
+{
+    if (DEBUGGING) gLog->info("FilterSettlers_Native: Function called");
+
+    RE::BSTArray<RE::TESObjectREFR*> filteredArray;
+
+    if (aFormArray.empty() || aFormArray.size() == 0) {
+        if (DEBUGGING) gLog->warn("FilterSettlers_Native: Input array is empty or null. Exiting function.");
+        return filteredArray;
+    }
+
+    if (aChestTypePass < 0 || aChestTypePass > 3) {
+        if (DEBUGGING) gLog->warn("FilterSettlers_Native: Invalid chest type pass value: {}. Must be between 0 and 3. Exiting function.", aChestTypePass);
+        return filteredArray;
+    }
+
+    if (DEBUGGING) gLog->info("FilterSettlers_Native: Found {} settlers before filtering.", aFormArray.size());
+
+    // Check each form in the input array and filter for settlers
+    for (const auto& form : aFormArray) {
+        if (!form) continue;
+        if (IsSettlerNPC_Internal(form)) {
+            filteredArray.push_back(form);
+        }
+    }
+
+    // Remove any null entries to prevent crashes
+    filteredArray.erase(std::remove(filteredArray.begin(), filteredArray.end(), nullptr), filteredArray.end());
+
+    // Remove duplicates to prevent crashes
+    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
+    auto it = filteredArray.begin();
+    while (it != filteredArray.end()) {
+        if (!uniqueSet.insert(*it).second) {
+            it = filteredArray.erase(it); // Duplicate found, erase
+        } else {
+            ++it;
+        }
+    }
+
+    // Further filter by chest type if specified
+    if (aChestTypePass != 0) {
+        RE::BSTArray<RE::TESObjectREFR*> guards;
+        RE::BSTArray<RE::TESObjectREFR*> workers;
+        for (auto* aNPC : filteredArray) {
+            if (!aNPC) continue;
+            // Get the bIsGuard property from the WorkshopNPCScript
+            bool bIsGuard = GetPapyrusProperty_Internal<bool>(aNPC, "WorkshopNPCScript", "bIsGuard").value_or(false);
+            if (DEBUGGING) gLog->info("FilterSettlers_Native: NPC FormID: {:08X} bIsGuard: {}", aNPC->GetFormID(), bIsGuard);
+            // Only Guards
+            if (bIsGuard) {
+                guards.push_back(aNPC);
+            // Only Non-Guards
+            } else {
+                workers.push_back(aNPC);
+            }
+        }
+        if (aChestTypePass == 1) {
+            filteredArray = guards;
+        } else {
+            filteredArray = workers;
+        }
+    }
+
+    // Shuffle the array before returning it
+    if (aShuffle) {
+        std::shuffle(filteredArray.begin(), filteredArray.end(), std::mt19937{ std::random_device{}() });
+    }
+
+    if (DEBUGGING) gLog->info("FilterSettlers_Native: Filtered array has {} settlers with Chest Type: {}", filteredArray.size(), aChestTypePass);
+
+    return filteredArray;
 }
 
 // ObjectReference[] Function FindAllObjectsWithAnyKeywords(ObjectReference akRef, FormList akKeywords, Int aRadius) global native
@@ -756,6 +834,84 @@ RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESOb
     return foundObjects;
 }
 
+// ObjectReference[] Function FindSettlerTrunk(Float aRadius) Global native
+RE::BSTArray<RE::TESObjectREFR*> FindSettlerTrunk_Native(std::monostate, float aRadius)
+{
+    if (DEBUGGING) gLog->info("FindSettlerTrunk_Native: Function called.");
+
+    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
+
+    // Get the player reference
+    RE::PlayerCharacter* player = RE::PlayerCharacter::GetSingleton();
+    if (!player) {
+        if (DEBUGGING) gLog->warn("FindSettlerTrunk_Native: Player reference is null.");
+        return foundObjects;
+    }
+
+    // Get the player cell
+    auto* cell = player->parentCell;
+    if (!cell)
+        return foundObjects;
+
+    // Get all forms in the cell
+    const auto& formsPair = cell->GetAllForms();
+
+    // Get the map of forms
+    const auto* formsMap = formsPair.first;
+    if (!formsMap)
+        return foundObjects;
+
+    // Get the player position
+    auto playerPos = player->GetPosition();
+    // Iterate over all forms and check for references with matching keywords
+    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
+    for (auto& entry : *formsMap) {
+        RE::TESForm* form = entry.second;
+        // early continue if form is null
+        if (!form) continue;
+        // Check if the form is a reference
+        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
+        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
+            continue;
+        }
+        // Check distance
+        float distance = playerPos.GetDistance(ref->GetPosition());
+        if (distance > aRadius) continue;
+        // Check keywords
+        if (!HasAnyKeyword_Internal(ref, trunkKeyword)) {
+            continue;
+        }
+        // if we reach this point, we have a match
+        tempObjects.emplace_back(ref, distance);
+    }
+
+    // Sort by distance (closest first)
+    std::sort(tempObjects.begin(), tempObjects.end(),
+    [](const auto& a, const auto& b) { return a.second < b.second; });
+    // Extract sorted references
+    for (const auto& pair : tempObjects) {
+        foundObjects.push_back(pair.first);
+    }
+
+    // Remove any null entries to prevent crashes
+    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
+
+    // Remove duplicates
+    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
+    auto it = foundObjects.begin();
+    while (it != foundObjects.end()) {
+        if (!uniqueSet.insert(*it).second) {
+            it = foundObjects.erase(it); // Duplicate found, erase
+        } else {
+            ++it;
+        }
+    }
+
+    if (DEBUGGING) gLog->info("FindSettlerTrunk_Native: Found {} matching trunk references.", foundObjects.size());
+
+    return foundObjects;
+}
+
 // Form[] Function GetArmorItems(Form[] aFormArray) global native
 RE::BSTArray<RE::TESForm*> GetArmorItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray)
 {
@@ -825,7 +981,7 @@ RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSI
         if (!currentItem || !currentItem->object) continue;
         RE::TESForm* form = currentItem->object->As<RE::TESForm>();
         if (!form) continue;
-        if (!IsArmorWeapon_Internal(form)) {
+        if (!IsArmorWeapon_Internal(currentItem)) {
             continue;
         }
         if (form->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
@@ -956,7 +1112,7 @@ RE::BGSInventoryItem* GetBestItem_Internal(RE::BSTArray<RE::BGSInventoryItem*> i
         if (!currentItem || !currentItem->object) continue;
         RE::TESForm* form = currentItem->object->As<RE::TESForm>();
         if (!form) continue;
-        if (IsArmorWeapon_Internal(form)) {
+        if (IsArmorWeapon_Internal(currentItem)) {
             std::int32_t currentValue = GetGoldPrice_Internal(form);
             if (currentValue > bestValue) {
                 bestItem = currentItem;
@@ -1188,7 +1344,7 @@ RE::BSTArray<RE::BGSInventoryItem*> GetWeaponItems_Internal(RE::BGSInventoryList
     }
     for (RE::BGSInventoryItem& item : inventoryList->data) {
         if (!item.object) continue;
-        if (!IsArmorWeapon_Internal(item.object)) {
+        if (!IsArmorWeapon_Internal(&item)) {
             continue;
         }
         if (item.object->GetFormType() == RE::ENUM_FORM_ID::kWEAP) {
@@ -1276,6 +1432,27 @@ bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::unordered_set<st
         std::string editorIDLower(editorID);
         std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
         if (keywords.find(editorIDLower) != keywords.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::string& keyword)
+{
+    if (!aRef) return false;
+    RE::TESBoundObject* baseForm = aRef->GetObjectReference();
+    auto* keywordForm = baseForm ? baseForm->As<RE::BGSKeywordForm>() : nullptr;
+    if (!keywordForm) return false;
+    std::string keywordLower = keyword;
+    std::transform(keywordLower.begin(), keywordLower.end(), keywordLower.begin(), ::tolower);
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* kw = keywordForm->keywords[i];
+        if (!kw) continue;
+        const char* editorID = kw->GetFormEditorID();
+        if (!editorID) continue;
+        std::string editorIDLower(editorID);
+        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
+        if (editorIDLower == keywordLower) {
             return true;
         }
     }
@@ -1369,6 +1546,8 @@ bool IsArmorWeapon_Internal(RE::TESForm* aForm)
 bool IsArmorWeapon_Internal(RE::BGSInventoryItem* aItem)
 {
     if (!aItem || !aItem->object)
+        return false;
+    if (aItem->stackData->GetCount() <= 0)
         return false;
     // Forward to the TESForm* version
     return IsArmorWeapon_Internal(aItem->object);
@@ -1569,13 +1748,6 @@ bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC)
         if (!included) return false;
     }
 
-    // This NPC is in the correct factions and should have a WorkshopNPCScript attached
-    bool bIsGuard = GetPapyrusProperty_Internal<bool>(aNPC, "WorkshopNPCScript", "bIsGuard").value_or(false);
-    if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: Retrieved bIsGuard value: {} for NPC FormID {:08X}.", bIsGuard, aNPC->formID);
-    // This is not working yet
-    //int workshopID = GetPapyrusProperty_Internal<int>(aNPC, "WorkshopNPCScript", "workshopID").value_or(0);
-    //if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: Retrieved workshopID value: {} for NPC FormID {:08X}.", workshopID, aNPC->formID);
-
     // All tests passed
     return true;
 }
@@ -1722,6 +1894,7 @@ bool PreProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESO
         // Decide if swap is needed
         if (bestContainerArmor && (containerArmorValue > npcArmorValue || !bestNpcArmor)) {
             // Return true that a swap is needed
+            if (DEBUGGING) gLog->info("PreProcessNPCArmor_Native: Swap needed.");
             return true;
         }
     }
@@ -1833,6 +2006,7 @@ bool PreProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TES
     // Decide if swap is needed
     if (bestContainerWeapon && (containerWeaponValue > npcWeaponValue || !bestNpcWeapon)) {
         // Return true that a swap is needed
+        if (DEBUGGING) gLog->info("PreProcessNPCWeapon_Native: Swap needed.");
         return true;
     }
     // No swap needed
@@ -1939,7 +2113,7 @@ bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOld
     RE::TESObjectREFR::RemoveItemData newItemRemoveItemData = BuildRemoveItemData_Internal(newItemObject, aNPC, 1);
     aContainer->RemoveItem(newItemRemoveItemData);
     if (DEBUGGING) gLog->info("SwapItems_Native: Moved new item from the container to the NPC, FormID: {:08X}", aNewItem->formID);
-    if (aOldItem) {
+    if (IsArmorWeapon_Internal(aOldItem)) {
         // Unequip the old item first
         UnEquipInventoryItem_Internal(aNPC, aOldItem->As<RE::BGSInventoryItem>());
         // aOldItem: aNPC -> aContainer
@@ -1969,7 +2143,7 @@ bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aOldItem,
         RE::TESObjectREFR::RemoveItemData newItemRemoveItemData = BuildRemoveItemData_Internal(newItemObject, aNPC, 1);
         aContainer->RemoveItem(newItemRemoveItemData);
     }
-    if (aOldItem) {
+    if (IsArmorWeapon_Internal(aOldItem)) {
         // Unequip the old item first
         UnEquipInventoryItem_Internal(aNPC, aOldItem);
         // aOldItem: aNPC -> aContainer
@@ -1985,7 +2159,7 @@ bool UnEquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem
 {
     if (!aInvItem || !aInvItem->object || !aNPC) return false;
     // Last check to ensure the item is an armor or weapon
-    if (!IsArmorWeapon_Internal(aInvItem->object)) return false;
+    if (!IsArmorWeapon_Internal(aInvItem)) return false;
     // Get the actor from the reference
     RE::Actor* actor = aNPC->As<RE::Actor>();
     if (!actor)
@@ -2001,7 +2175,7 @@ bool UnEquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem
         }
     }
     if (!instanceData) {
-        if (DEBUGGING) gLog->warn("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}. Attempt to equip to the default slot.", aInvItem->object->GetFormID());
+        if (DEBUGGING) gLog->warn("EquipInventoryItem_Internal: No valid instanceData found for FormID: {:08X}. Using default.", aInvItem->object->GetFormID());
         validStackID = 0;
         instanceData = nullptr;
     }
@@ -2054,9 +2228,11 @@ bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
     vm->BindNativeMethod("ES_API", "CombineArrayObject", CombineArrayObject_Native, true);
     vm->BindNativeMethod("ES_API", "EquipBestItems", EquipBestItems_Native, true);
     vm->BindNativeMethod("ES_API", "EquipBestItemsAll", EquipBestItemsAll_Native, true);
+    vm->BindNativeMethod("ES_API", "FilterSettlers", FilterSettlers_Native, true);
     vm->BindNativeMethod("ES_API", "FindAllObjectsWithAnyKeywords", FindAllObjectsWithAnyKeywords_Native, true);
     vm->BindNativeMethod("ES_API", "FindNearbyWorkshopObjects", FindNearbyWorkshopObjects_Native, true);
     vm->BindNativeMethod("ES_API", "FindSettlerNPC", FindSettlerNPC_Native, true);
+    vm->BindNativeMethod("ES_API", "FindSettlerTrunk", FindSettlerTrunk_Native, true);
     vm->BindNativeMethod("ES_API", "GetArmorItems", GetArmorItems_Native, true);
     vm->BindNativeMethod("ES_API", "GetBestArmor", GetBestArmor_Native, true);
     vm->BindNativeMethod("ES_API", "GetBestWeapon", GetBestWeapon_Native, true);

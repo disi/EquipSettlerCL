@@ -3,7 +3,7 @@
 #include <Papyrus.h>
 
 // Global debug flag
-bool DEBUGGING = true;
+bool DEBUGGING = false;
 
 // Global logger pointer
 std::shared_ptr<spdlog::logger> gLog;
@@ -41,9 +41,19 @@ std::unordered_set<std::string> npcInclude = { "actortypenpc", "actortypehuman" 
 bool npcIncludeCleared = false;
 // Global variable to store NPC exclude EditorIDs
 std::unordered_set<std::string> npcExclude = {
+    "abigailfinch",
+    "abrahamfinch",
     "annehargraves",
+    "blakeabernathy",
+    "connieabernathy",
+    "danielfinch",
+    "deirdre",
     "docweathers",
+    "jacoborden",
+    "junewarwick",
     "junlong",
+    "kessler",
+    "lucyabernathy",
     "mamamurphy",
     "marcylong",
     "minutemenradioannouncer",
@@ -51,7 +61,8 @@ std::unordered_set<std::string> npcExclude = {
     "sheffield",
     "sturges",
     "tinadeluca",
-    "vaulttecrep"
+    "vaulttecrep",
+    "wiseman"
 };
 bool npcExcludeCleared = false;
 // Global variables for faction filters
@@ -88,6 +99,8 @@ bool workshopObjectKeywordsCleared = false;
 // Global variables for ammunition
 int ammoMin = 20;
 int ammoRefill = 20;
+// Global variable for the trunk Keyword
+std::string trunkKeyword = "ES_EquipSettlerTrunk";
 
 // Helper function to extract value from a line
 inline std::string GetValueFromLine(const std::string& line) {
@@ -366,7 +379,6 @@ void F4SEMessageHandler(F4SE::MessagingInterface::Message* a_message) {
         } else {
             gLog->warn("Failed to acquire TESDataHandler singleton.");
         }
-        break;
     }
 }
 

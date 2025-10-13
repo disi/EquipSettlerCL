@@ -1,5 +1,6 @@
 #pragma once
 #include <PCH.h>
+#include <Papyrus.h>
 
 // Global logger pointer
 extern std::shared_ptr<spdlog::logger> gLog;
@@ -37,3 +38,6 @@ extern int ammoRefill;
 
 // Default ini file
 extern const char* defaultIni;
+
+// Global variable for the trunk Keyword
+extern std::string trunkKeyword;
