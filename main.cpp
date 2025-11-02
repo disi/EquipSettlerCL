@@ -28,47 +28,64 @@ namespace Version
 {
     inline constexpr std::size_t MAJOR = 0;
     inline constexpr std::size_t MINOR = 5;
-    inline constexpr std::size_t PATCH = 0;
+    inline constexpr std::size_t PATCH = 6;
     inline constexpr auto NAME = "0.5"sv;
     inline constexpr auto AUTHORNAME = "disi"sv;
     inline constexpr auto PROJECT = "EquipSettlerCL"sv;
 }
 
 // Global variable to play animations
-bool ANIMATION = true;
-// Global variable to store NPC keywords
-std::unordered_set<std::string> npcInclude = { "actortypenpc", "actortypehuman" };
-bool npcIncludeCleared = false;
+bool ANIMATION = false;
 // Global variable to store NPC exclude EditorIDs
-std::unordered_set<std::string> npcExclude = {
-    "abigailfinch",
-    "abrahamfinch",
-    "annehargraves",
-    "blakeabernathy",
-    "connieabernathy",
-    "danielfinch",
-    "deirdre",
-    "docweathers",
-    "jacoborden",
-    "junewarwick",
-    "junlong",
-    "kessler",
-    "lucyabernathy",
-    "mamamurphy",
-    "marcylong",
-    "minutemenradioannouncer",
-    "ronnieshaw",
-    "sheffield",
-    "sturges",
-    "tinadeluca",
-    "vaulttecrep",
-    "wiseman"
+std::unordered_set<std::uint32_t> excludeNPC = {
+    0x0003F22C,
+    0x00045C34,
+    0x0003F23D,
+    0x00045C35,
+    0x00036D6F,
+    0x00036D72,
+    0x0006B4D3,
+    0x0006D3A2,
+    0x0006B4D1,
+    0x0006D3A3,
+    0x0003F22B,
+    0x00045C36,
+    0x0003F23B,
+    0x00048B78,
+    0x0012FCCB,
+    0x0012FCCC,
+    0x00039FD3,
+    0x00089143,
+    0x0003F236,
+    0x00048BA8,
+    0x00019FDB,
+    0x0001A4DB,
+    0x0001995C,
+    0x0001995E,
+    0x0006B4D2,
+    0x0006D3A4,
+    0x00019FD8,
+    0x0001A4D9,
+    0x00019FDC,
+    0x0001A4DA,
+    0x000AA78E,
+    0x000B0EEE,
+    0x0003A458,
+    0x00055EC9,
+    0x00002F06,
+    0x00002F07,
+    0x00019FDA,
+    0x0001A4D8,
+    0x0002A82A,
+    0x000ABF9E,
+    0x00031FB3,
+    0x000ABFA0,
+    0x00031FB4,
+    0x0003F234,
+    0x00048B76
 };
-bool npcExcludeCleared = false;
-// Global variables for faction filters
-std::unordered_set<std::string> includeFaction = { "workshopnpcfaction" };
-bool includeFactionCleared = false;
-std::unordered_set<std::string> excludeFaction = { "currentcompanionfaction", "potentialcompanionfaction" };
+bool excludeNPCCleared = false;
+std::unordered_set<std::uint32_t> excludeFaction = { 0x00023C01, 0x001EC1B9 };
 bool excludeFactionCleared = false;
 // Global variable for max allowed slotmask
 std::uint32_t maxAllowedSlotmask = 0xFFFFFFFF;
@@ -76,25 +93,25 @@ std::uint32_t maxAllowedSlotmask = 0xFFFFFFFF;
 std::vector<int> slotOrder = {33, 30, 41, 42, 43, 44, 45};
 // Global variable for armor slots per cycle
 int armorSlotsPerCycle = 1;
-// Global variable for excluded keywords
-std::unordered_set<std::string> excludedKeywords = { "playercannotequip", "armortypepower" };
+// Global variable for excluded keywords items
+std::unordered_set<std::uint32_t> excludedKeywords = { 0x001CF299, 0x0004D8A1 };
 bool excludedKeywordsCleared = false;
-// Global variable for included keywords
-std::unordered_set<std::string> includedKeywords = {
-    "objecttypeweapon",
-    "objecttypearmor",
-    "armortypehat",
-    "armorbodypartchest",
-    "armorbodyparthands",
-    "armorbodypartfeet",
-    "ma_railroad_clothingarmor",
-    "dogmeatnovisualsonretrieve"
+// Global variable for included keywords items
+std::unordered_set<std::uint32_t> includedKeywords = {
+    0x000F4AEA,
+    0x000F4AE9,
+    0x0012EEE8,
+    0x0006C0EC,
+    0x0010C417,
+    0x0006C0ED,
+    0x0020DE40,
+    0x0007820B
 };
 bool includedKeywordsCleared = false;
 // Global variable for excluded FormIDs
-std::unordered_set<std::string> excludedFormIDs = { };
+std::unordered_set<std::uint32_t> excludedFormIDs = {};
 // Global variable to store Workshop objects keywords
-std::unordered_set<std::string> workshopObjectKeywords = { "workshopbedobject", "workshopguardobject", "workshopworkobject" };
+std::unordered_set<std::uint32_t> workshopObjectKeywords = { 0x00020596, 0x00069548, 0x00020592 };
 bool workshopObjectKeywordsCleared = false;
 // Global variables for ammunition
 int ammoMin = 20;
@@ -108,6 +125,9 @@ inline std::string GetValueFromLine(const std::string& line) {
     if (eqPos == std::string::npos)
         return "";
     std::string value = line.substr(eqPos + 1);
+    size_t semicolonPos = value.find(';');
+    // remove comments after the value
+    if (semicolonPos != std::string::npos) value = value.substr(0, semicolonPos);
     value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
     return value;
 }
@@ -127,7 +147,13 @@ std::string GetPluginDirectory(HMODULE hModule) {
 }
 // Helper to parse hex string to uint32_t
 uint32_t ParseHexFormID(const std::string& hexStr) {
-    return static_cast<uint32_t>(std::stoul(hexStr, nullptr, 16));
+    if (hexStr.empty()) return 0;
+    try {
+        return static_cast<uint32_t>(std::stoul(hexStr, nullptr, 16));
+    } catch (...) {
+        if (DEBUGGING) gLog->warn("ParseHexFormID: Failed to parse hex string: {}", hexStr);
+        return 0;
+    }
 }
 void LoadConfig(HMODULE hModule) {
     std::string configPath = GetPluginDirectory(hModule) + "EquipSettler.ini";
@@ -144,14 +170,14 @@ void LoadConfig(HMODULE hModule) {
             out.close();
             gLog->info("Default INI created at: {}", configPath);
         } else {
-            gLog->error("Failed to create default INI at: {}", configPath);
+            gLog->warn("Failed to create default INI at: {}", configPath);
             return;
         }
 
         // Try to open again for reading
         file.open(configPath);
         if (!file.is_open()) {
-            gLog->error("Still could not open INI file after creating default: {}", configPath);
+            gLog->warn("Still could not open INI file after creating default: {}", configPath);
             return;
         }
     }
@@ -190,54 +216,39 @@ void LoadConfig(HMODULE hModule) {
             continue;
         }
 
-        // --- NPC Keywords ---
-        if (lowerLine.find("npcinclude") == 0) {
-            if (!npcIncludeCleared) {
-                npcInclude.clear();
-                npcIncludeCleared = true;
-            }
-            std::string value = GetValueFromLine(line);
-            if (!value.empty())
-                npcInclude.insert(ToLower(value));
-            continue;
-        }
-
         // --- NPC Exclude EditorIDs ---
-        if (lowerLine.find("npcexclude") == 0) {
-            if (!npcExcludeCleared) {
-                npcExclude.clear();
-                npcExcludeCleared = true;
+        if (lowerLine.find("excludenpc") == 0) {
+            if (!excludeNPCCleared) {
+                excludeNPC.clear();
+                excludeNPCCleared = true;
             }
-            std::string value = GetValueFromLine(line);
-            if (!value.empty())
-                npcExclude.insert(ToLower(value));
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = excludeNPC;
+                try {
+                    temp.insert(value);
+                    excludeNPC.insert(value);
+                } catch (...) {
+                    if (DEBUGGING) gLog->warn("Failed to insert excludeNPC value: {:08X}", value);
+                }
+            }
             continue;
         }
 
-        // --- NPC Faction filters ---
-        if (lowerLine.find("includefaction") == 0) {
-            if (!includeFactionCleared) {
-                includeFaction.clear();
-                includeFactionCleared = true;
-            }
-            std::string value = GetValueFromLine(line);
-            if (!value.empty()) {
-                try {
-                    includeFaction.insert(ToLower(value));
-                } catch (...) { /* ignore invalid entries */ }
-            }
-            continue;
-        }
         if (lowerLine.find("excludefaction") == 0) {
             if (!excludeFactionCleared) {
                 excludeFaction.clear();
                 excludeFactionCleared = true;
             }
-            std::string value = GetValueFromLine(line);
-            if (!value.empty()) {
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = excludeFaction;
                 try {
-                    excludeFaction.insert(ToLower(value));
-                } catch (...) { /* ignore invalid entries */ }
+                    temp.insert(value);
+                    excludeFaction.insert(value);
+                } catch (...) { 
+                    if (DEBUGGING) gLog->warn("Failed to insert excludeFaction value: {:08X}", value);
+                }
             }
             continue;
         }
@@ -249,7 +260,9 @@ void LoadConfig(HMODULE hModule) {
                 value = value.substr(2);
             try {
                 maxAllowedSlotmask = ParseHexFormID(value);
-            } catch (...) { /* keep default if invalid */ }
+            } catch (...) { 
+                if (DEBUGGING) gLog->warn("Failed to parse maxAllowedSlotmask value: {}", value);
+            }
             continue;
         }
 
@@ -257,18 +270,21 @@ void LoadConfig(HMODULE hModule) {
         if (lowerLine.find("slotorder") == 0) {
             std::string value = GetValueFromLine(line);
             slotOrder.clear();
+            std::vector<int> temp = slotOrder;
             std::stringstream ss(value);
             std::string token;
             while (std::getline(ss, token, ',')) {
                 token.erase(std::remove_if(token.begin(), token.end(), ::isspace), token.end());
                 if (!token.empty()) {
                     try {
-                        slotOrder.push_back(std::stoi(token));
-                    } catch (...) { /* ignore invalid entries */ }
+                        temp.push_back(std::stoi(token));
+                    } catch (...) { 
+                        if (DEBUGGING) gLog->warn("Failed to parse slotOrder token: {}", token);
+                    }
                 }
             }
-            if (slotOrder.empty()) {
-                slotOrder = {33, 30, 41, 42, 43, 44, 45};
+            if (!temp.empty()) {
+                slotOrder = temp;
             }
             continue;
         }
@@ -279,7 +295,9 @@ void LoadConfig(HMODULE hModule) {
             try {
                 armorSlotsPerCycle = std::stoi(value);
                 if (armorSlotsPerCycle < 0) armorSlotsPerCycle = 0;
-            } catch (...) { /* keep default if invalid */ }
+            } catch (...) { 
+                if (DEBUGGING) gLog->warn("Failed to parse armorSlotsPerCycle value: {}", value);
+            }
             continue;
         }
 
@@ -289,9 +307,16 @@ void LoadConfig(HMODULE hModule) {
                 excludedKeywords.clear();
                 excludedKeywordsCleared = true;
             }
-            std::string kw = GetValueFromLine(line);
-            if (!kw.empty())
-                excludedKeywords.insert(ToLower(kw));
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = excludedKeywords;
+                try {
+                    temp.insert(value);
+                    excludedKeywords.insert(value);
+                } catch (...) { 
+                    if (DEBUGGING) gLog->warn("Failed to insert excludeItem keyword: {:08X}", value);
+                }
+            }
             continue;
         }
 
@@ -301,19 +326,30 @@ void LoadConfig(HMODULE hModule) {
                 includedKeywords.clear();
                 includedKeywordsCleared = true;
             }
-            std::string kw = GetValueFromLine(line);
-            if (!kw.empty())
-                includedKeywords.insert(ToLower(kw));
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = includedKeywords;
+                try {
+                    temp.insert(value);
+                    includedKeywords.insert(value);
+                } catch (...) { 
+                    if (DEBUGGING) gLog->warn("Failed to insert includeItem keyword: {:08X}", value);
+                }
+            }
             continue;
         }
 
         // --- Item Excluded FormIDs ---
         if (lowerLine.find("excludeformid") == 0) {
-            std::string value = GetValueFromLine(line);
-            if (!value.empty()) {
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = excludedFormIDs;
                 try {
+                    temp.insert(value);
                     excludedFormIDs.insert(value);
-                } catch (...) { /* ignore invalid entries */ }
+                } catch (...) { 
+                    if (DEBUGGING) gLog->warn("Failed to insert excludeFormID value: {:08X}", value);
+                }
             }
             continue;
         }
@@ -324,9 +360,16 @@ void LoadConfig(HMODULE hModule) {
                 workshopObjectKeywords.clear();
                 workshopObjectKeywordsCleared = true;
             }
-            std::string value = GetValueFromLine(line);
-            if (!value.empty())
-                workshopObjectKeywords.insert(ToLower(value));
+            std::uint32_t value = ParseHexFormID(GetValueFromLine(line));
+            if (value != 0) {
+                std::unordered_set<std::uint32_t> temp = workshopObjectKeywords;
+                try {
+                    temp.insert(value);
+                    workshopObjectKeywords.insert(value);
+                } catch (...) { 
+                    if (DEBUGGING) gLog->warn("Failed to insert workshopObject keyword: {:08X}", value);
+                }
+            }
             continue;
         }
 
@@ -334,28 +377,30 @@ void LoadConfig(HMODULE hModule) {
         if (lowerLine.find("ammomin") == 0) {
             try {
                 ammoMin = std::stoi(GetValueFromLine(line));
-            } catch (...) { /* keep default if invalid */ }
+            } catch (...) { 
+                if (DEBUGGING) gLog->warn("Failed to parse ammomin value: {}", GetValueFromLine(line));
+            }
             continue;
         }
         if (lowerLine.find("ammorefill") == 0) {
             try {
                 ammoRefill = std::stoi(GetValueFromLine(line));
-            } catch (...) { /* keep default if invalid */ }
+            } catch (...) { 
+                if (DEBUGGING) gLog->warn("Failed to parse ammoRefill value: {}", GetValueFromLine(line));
+            }
             continue;
         }
     }
     file.close();
     // Log loaded settings
-    gLog->info("Loaded {} npcInclude entries from INI.", npcInclude.size());
-    gLog->info("Loaded {} npcExclude entries from INI.", npcExclude.size());
-    gLog->info("Loaded {} includeFaction entries from INI.", includeFaction.size());
+    gLog->info("Loaded {} excludeNPC entries from INI.", excludeNPC.size());
     gLog->info("Loaded {} excludeFaction entries from INI.", excludeFaction.size());
     gLog->info("maxAllowedSlotmask set to: 0x{:X}", maxAllowedSlotmask);
-    gLog->info("Loaded {} slots as slotOrder from INI.", slotOrder.size());
+    gLog->info("Loaded {} equipment slots as slotOrder from INI.", slotOrder.size());
     gLog->info("armorSlotsPerCycle set to: {}", armorSlotsPerCycle);
-    gLog->info("Loaded {} excluded keywords from INI.", excludedKeywords.size());
-    gLog->info("Loaded {} included keywords from INI.", includedKeywords.size());
-    gLog->info("Loaded {} excluded FormIDs from INI.", excludedFormIDs.size());
+    gLog->info("Loaded {} excluded item keywords from INI.", excludedKeywords.size());
+    gLog->info("Loaded {} included item keywords from INI.", includedKeywords.size());
+    gLog->info("Loaded {} excluded item FormIDs from INI.", excludedFormIDs.size());
     gLog->info("Loaded {} workshopObject entries from INI.", workshopObjectKeywords.size());
     gLog->info("ammoMin set to: {}", ammoMin);
     gLog->info("ammoRefill set to: {}", ammoRefill);

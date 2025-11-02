@@ -4,9 +4,10 @@
 const char* defaultIni = R"(
 ; These settings control what items this mod handles for equipping settlers
 ; This affects every trunk in the game
+; Malformed INI values may cause the mod to load default values
 
 ; Enable/disable debugging messages
-DEBUGGING=true
+DEBUGGING=false
 
 ; Animation settings
 ; Enable/disable animation for running to the trunk and back
@@ -14,55 +15,68 @@ DEBUGGING=true
 ANIMATION=false
 
 ; --- NPC ---
-; Keywords for NPC race
-; At least one of these keywords must be present on the NPC race for it to be considered
-; The faction check is applied after this keyword check
-; You can add more keywords by copying the format below
-; very general NPC [KYWD:00013794]
-npcInclude=ActorTypeNPC
-; Any human [KYWD:0002CB72]
-npcInclude=ActorTypeHuman
-; Any ghoul [KYWD:000EAFB7]
-npcInclude=ActorTypeGhoul
-; Any super mutant [KYWD:0006D7B6]
-npcInclude=ActorTypeSuperMutant
-; Any synth [KYWD:0010C3CE]
-npcInclude=ActorTypeSynth
+; NPC to exclude by FormID
+; These are FormIDs of known unique settler NPCs
+; Using their base FormIDs and reference FormIDs in the world
+; Either match will work
+; If a settler NPC should be excluded, add their FormID here
+; You can find reference FormIDs ingame by opening the console and clicking on the NPC
+excludeNPC=0003F22C; AbigailFinch
+excludeNPC=00045C34; AbigailFinchRef
+excludeNPC=0003F23D; AbrahamFinch
+excludeNPC=00045C35; AbrahamFinchRef
+excludeNPC=00036D6F; AnneHargraves
+excludeNPC=00036D72; AnneHargravesRef
+excludeNPC=0006B4D3; BlakeAbernathy
+excludeNPC=0006D3A2; BlakeAbernathyRef
+excludeNPC=0006B4D1; ConnieAbernathy
+excludeNPC=0006D3A3; ConnieAbernathyRef
+excludeNPC=0003F22B; DanielFinch
+excludeNPC=00045C36; DanielFinchRef
+excludeNPC=0003F23B; Deirdre
+excludeNPC=00048B78; DeirdreRef
+excludeNPC=0012FCCB; DocWeathers
+excludeNPC=0012FCCC; DocWeathersRef
+excludeNPC=00039FD3; JacobOrden
+excludeNPC=00089143; JacobOrdenRef
+excludeNPC=0003F236; JuneWarwick
+excludeNPC=00048BA8; JuneWarwickRef
+excludeNPC=00019FDB; JunLong
+excludeNPC=0001A4DB; JunLongRef
+excludeNPC=0001995C; Kessler
+excludeNPC=0001995E; KesslerRef
+excludeNPC=0006B4D2; LucyAbernathy
+excludeNPC=0006D3A4; LucyAbernathyRef
+excludeNPC=00019FD8; MamaMurphy
+excludeNPC=0001A4D9; MamaMurphyRef
+excludeNPC=00019FDC; MarcyLong
+excludeNPC=0001A4DA; MarcyLongRef
+excludeNPC=000AA78E; MinutemenRadioAnnouncer
+excludeNPC=000B0EEE; MinutemenRadioAnnouncerRef
+excludeNPC=0003A458; RonnieShaw
+excludeNPC=00055EC9; RonnieShawRef
+excludeNPC=00002F06; Sheffield
+excludeNPC=00002F07; SheffieldRef
+excludeNPC=00019FDA; Sturges
+excludeNPC=0001A4D8; SturgesRef
+excludeNPC=0002A82A; TinaDeLuca
+excludeNPC=000ABF9E; VaultTecRep (human)
+excludeNPC=00031FB3; VaultTecRep (ghoul)
+excludeNPC=000ABFA0; VaultTecRepRef (human)
+excludeNPC=00031FB4; VaultTecRepRef (ghoul)
+excludeNPC=0003F234; Wiseman
+excludeNPC=00048B76; WisemanRef
+; You need at least one excludeNPC line to prevent default values from being loaded
+; Comment all above and uncomment below to disable all NPC exclusions
+;excludeNPC=
 
-; NPC to exclude by EditorID
-; A partial match is sufficient
-; This is evaluated before faction checks
-npcExclude=AbigailFinch
-npcExclude=AbrahamFinch
-npcExclude=AnneHargraves
-npcExclude=BlakeAbernathy
-npcExclude=ConnieAbernathy
-npcExclude=DanielFinch
-npcExclude=Deirdre
-npcExclude=DocWeathers
-npcExclude=JacobOrden
-npcExclude=JuneWarwick
-npcExclude=JunLong
-npcExclude=Kessler
-npcExclude=LucyAbernathy
-npcExclude=MamaMurphy
-npcExclude=MarcyLong
-npcExclude=MinutemenRadioAnnouncer
-npcExclude=RonnieShaw
-npcExclude=Sheffield
-npcExclude=Sturges
-npcExclude=TinaDeLuca
-npcExclude=VaultTecRep
-npcExclude=Wiseman
-
-; Factions for NPC
-; Only settlers that match these faction criteria will be affected by this mod
-; WorkshopNPCFaction 000337F3
-includeFaction=WorkshopNPCFaction
-; CurrentCompanionFaction 00023C01
-excludeFaction=CurrentCompanionFaction
-; PotentialCompanionFaction 001EC1B9
-excludeFaction=PotentialCompanionFaction
+; Factions
+; NPC in these factions will be excluded
+excludeFaction=00023C01; CurrentCompanionFaction
+excludeFaction=001EC1B9; PotentialCompanionFaction
+; You need at least one excludeFaction line to prevent default values from being loaded
+; Comment all above and uncomment below to disable all NPC faction exclusions
+;excludeFaction=
 
 ; --- Items ---
 ; The combined slotmask of head, outfit, body armor, left/right arm armor, left/right leg armor
@@ -84,28 +98,27 @@ armorSlotsPerCycle=1
 ; Keywords on armor or weapons to exclude from the mod
 ; This is evaluated before the include list
 ; supermutant and dog armor etc
-excludeItem=playerCannotEquip
+excludeItem=001CF299; playerCannotEquip
 ; PowerArmor
-excludeItem=ArmorTypePower
+excludeItem=0004D8A1; ArmorTypePower
 
-; Keywords on armor or weapons
+; Keywords on armor and weapons
 ; At least one of these keywords must be present on an item for it to be considered
 ; Any Weapon
-includeItem=ObjectTypeWeapon
+includeItem=000F4AEA; ObjectTypeWeapon
 ; A very general armor keyword
-includeItem=ObjectTypeArmor
+includeItem=000F4AE9; ObjectTypeArmor
 ; The individual armor parts
-includeItem=ArmorTypeHat
-includeItem=ArmorBodyPartChest
-includeItem=ArmorBodyPartHands
-includeItem=ArmorBodyPartFeet
+includeItem=0012EEE8; ArmorTypeHat
+includeItem=0006C0EC; ArmorBodyPartChest
+includeItem=0010C417; ArmorBodyPartHands
+includeItem=0006C0ED; ArmorBodyPartFeet
 ; Underarmor for weave
-includeItem=ma_Railroad_ClothingArmor
+includeItem=0020DE40; ma_Railroad_ClothingArmor
 ; Very general clothing keyword for outfits
-includeItem=DogmeatNoVisualsOnRetrieve
+includeItem=0007820B; DogmeatNoVisualsOnRetrieve
 
 ; FormID of specific items to exclude from the mod
-; This is evaluated last
 ; Army Helmet
 ;excludeFormID=00023432
 ; Dirty Army Helmet
@@ -115,11 +128,11 @@ includeItem=DogmeatNoVisualsOnRetrieve
 ; Keywords for settlement related objects
 ; This is used to find nearby workshop objects for the animated NPC to return to
 ; WorkshopBedObject [KYWD:00020596]
-workshopObject=WorkshopBedObject
+workshopObject=00020596; WorkshopBedObject
 ; WorkshopGuardObject [KYWD:00069548]
-workshopObject=WorkshopGuardObject
+workshopObject=00069548; WorkshopGuardObject
 ; WorkshopWorkObject [KYWD:00020592]
-workshopObject=WorkshopWorkObject
+workshopObject=00020592; WorkshopWorkObject
 
 ; --- Other ---
 ; Ammo settings

@@ -1,69 +1,6 @@
 #include <PCH.h>
 #include <Global.h>
 
-// Declare all functions here
-bool AdminEquipSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer);
-bool AdminStripSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer);
-RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryItem* aInventoryItem, RE::TESObjectREFR* aContainer, std::int32_t aCount);
-RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::BGSInventoryItem* aInventoryItem, RE::TESObjectREFR* aContainer, std::uint32_t aCount);
-RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::TESBoundObject* aInventoryItem, RE::TESObjectREFR* aContainer, std::int32_t aCount);
-RE::BSTArray<RE::TESForm*> CombineArrayForm_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2);
-RE::BSTArray<RE::TESObjectREFR*> CombineArrayObject_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray1, RE::BSTArray<RE::TESObjectREFR*> aFormArray2);
-void EquipBestItems_Native(std::monostate, RE::TESObjectREFR* aNPC);
-void EquipBestItems_Internal(RE::TESObjectREFR* aNPC);
-void EquipBestItemsAll_Native(std::monostate, std::vector<RE::TESObjectREFR*> akNPC);
-bool EquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem);
-RE::BSTArray<RE::TESObjectREFR*> FilterSettlers_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray, std::int32_t aChestTypePass, bool aShuffle);
-RE::BSTArray<RE::TESObjectREFR*> FindAllObjectsWithAnyKeywords_Native(std::monostate, RE::TESObjectREFR* akRef, RE::BSTArray<RE::BGSKeyword*> akKeywords, float aRadius, bool shuffleResults);
-RE::BSTArray<RE::TESObjectREFR*> FindNearbyWorkshopObjects_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
-RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults);
-RE::BSTArray<RE::TESObjectREFR*> FindSettlerTrunk_Native(std::monostate, float aRadius);
-RE::BSTArray<RE::TESForm*> GetArmorItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
-RE::BSTArray<RE::TESForm*> GetArmorItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray);
-RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSInventoryItem*> itemArray);
-RE::TESObjectARMO* GetBestArmor_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
-RE::TESObjectWEAP* GetBestWeapon_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
-RE::TESForm* GetBestItem_Internal(RE::BSTArray<RE::TESForm*> aFormArray);
-RE::BGSInventoryItem* GetBestItem_Internal(RE::BSTArray<RE::BGSInventoryItem*> itemArray);
-std::int32_t GetGoldPrice_Native(std::monostate, RE::TESForm* aForm);
-std::int32_t GetGoldPrice_Internal(RE::TESForm* aForm);
-RE::BSTArray<RE::TESForm*> GetMatchingItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot);
-RE::BSTArray<RE::TESForm*> GetMatchingItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot);
-RE::BSTArray<RE::BGSInventoryItem*> GetMatchingItems_Internal(RE::BGSInventoryList* inventoryList, std::int32_t slot);
-template <typename T>
-std::optional<T> GetPapyrusProperty_Internal(RE::TESObjectREFR* ref, const std::string& scriptName, const std::string& propertyName);
-std::uint32_t GetSlotMaskFromIndex_Internal(std::int32_t aiSlotIndex);
-RE::BSTArray<RE::TESForm*> GetWeaponItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray);
-RE::BSTArray<RE::BGSInventoryItem*> GetWeaponItems_Internal(RE::BGSInventoryList* inventoryList);
-bool HasAnyKeyword_Internal(RE::TESForm* form, const std::vector<std::string>& keywords);
-bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::vector<std::string>& keywords);
-bool HasAnyKeyword_Internal(RE::TESForm* form, const std::unordered_set<std::string>& keywords);
-bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::unordered_set<std::string>& keywords);
-bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::string& keyword);
-bool IsArmorWeapon_Native(std::monostate, RE::TESForm* aForm);
-bool IsArmorWeapon_Internal(RE::TESForm* aForm);
-bool IsArmorWeapon_Internal(RE::BGSInventoryItem* aItem);
-bool SettingDebuggingEnabled_Native(std::monostate);
-bool SettingAnimationEnabled_Native(std::monostate);
-bool IsFormIDExcluded_Internal(uint32_t formID);
-bool IsSettlerNPC_Native(std::monostate, RE::TESObjectREFR* aNPC);
-bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC);
-bool ItemMatchesSlot_Native(std::monostate, RE::TESObjectARMO* aArmor, std::int32_t aSlot);
-bool ProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool ProcessNPCArmor_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool PreProcessNPCArmor_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool ProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool ProcessNPCWeapon_Internal(RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool PreProcessNPCWeapon_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESObjectREFR* aContainer);
-bool SetObjectName_Native(std::monostate, RE::TESObjectREFR* aItemRef, RE::BSFixedString newName);
-RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray);
-RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Internal(RE::BSTArray<RE::TESObjectREFR*> aFormArray);
-bool StringContains_Native(std::monostate, RE::BSFixedString aString, RE::BSFixedString aSearchString);
-bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOldItem, RE::TESForm* aNewItem, RE::TESObjectREFR* aContainer);
-bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aOldItem, RE::BGSInventoryItem* aNewItem, RE::TESObjectREFR* aContainer);
-bool UnEquipInventoryItem_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aInvItem);
-void UpdateNPCVisual_Internal(RE::TESObjectREFR* aNPC);
-
 // bool Function AdminEquipSettlers(ObjectReference[] aNPC, ObjectReference aContainer) global native
 bool AdminEquipSettlers_Native(std::monostate, std::vector<RE::TESObjectREFR*> aNPCs, RE::TESObjectREFR* aContainer)
 {
@@ -208,80 +145,6 @@ RE::TESObjectREFR::RemoveItemData BuildRemoveItemData_Internal(RE::TESBoundObjec
     newData.reason = RE::ITEM_REMOVE_REASON::kStoreContainer;
 
     return newData;
-}
-
-// Form[] Function CombineArray(Form[] aFormArray1, Form[] aFormArray2) global native
-RE::BSTArray<RE::TESForm*> CombineArrayForm_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray1, RE::BSTArray<RE::TESForm*> aFormArray2)
-{
-    RE::BSTArray<RE::TESForm*> combinedArray;
-
-    if (DEBUGGING) gLog->info("CombineArrayForm_Native: Function called.");
-
-    // Check if the first array is valid before iterating to prevent crashes on null arrays.
-    if (!aFormArray1.empty() || aFormArray1.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArrayForm_Native: Adding items from first array.");
-        for (const auto& form : aFormArray1) {
-            // Check for null forms inside the array to prevent crashes.
-            if (form) {
-                combinedArray.push_back(form);
-            }
-        }
-    }
-
-    // Check if the second array is valid before iterating.
-    if (!aFormArray2.empty() || aFormArray2.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArrayForm_Native: Adding items from second array.");
-        for (const auto& form : aFormArray2) {
-            // Check for null forms inside the array to prevent crashes.
-            if (form) {
-                combinedArray.push_back(form);
-            }
-        }
-    }
-
-    if (DEBUGGING) gLog->info("CombineArrayForm_Native: Combined array has {} forms.", combinedArray.size());
-
-    // Shuffle the array before returning it
-    std::shuffle(combinedArray.begin(), combinedArray.end(), std::mt19937{ std::random_device{}() });
-
-    return combinedArray;
-}
-
-// Form[] Function CombineArray(Form[] aFormArray1, Form[] aFormArray2) global native
-RE::BSTArray<RE::TESObjectREFR*> CombineArrayObject_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray1, RE::BSTArray<RE::TESObjectREFR*> aFormArray2)
-{
-    RE::BSTArray<RE::TESObjectREFR*> combinedArray;
-
-    if (DEBUGGING) gLog->info("CombineArrayObject_Native: Function called.");
-
-    // Check if the first array is valid before iterating to prevent crashes on null arrays.
-    if (!aFormArray1.empty() || aFormArray1.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArrayObject_Native: Adding items from first array.");
-        for (const auto& form : aFormArray1) {
-            // Check for null forms inside the array to prevent crashes.
-            if (form) {
-                combinedArray.push_back(form);
-            }
-        }
-    }
-
-    // Check if the second array is valid before iterating.
-    if (!aFormArray2.empty() || aFormArray2.size() == 0) {
-        if (DEBUGGING) gLog->info("CombineArrayObject_Native: Adding items from second array.");
-        for (const auto& form : aFormArray2) {
-            // Check for null forms inside the array to prevent crashes.
-            if (form) {
-                combinedArray.push_back(form);
-            }
-        }
-    }
-
-    if (DEBUGGING) gLog->info("CombineArrayObject_Native: Combined array has {} forms.", combinedArray.size());
-
-    // Shuffle the array before returning it
-    std::shuffle(combinedArray.begin(), combinedArray.end(), std::mt19937{ std::random_device{}() });
-
-    return combinedArray;
 }
 
 // bool Function EquipBestItems(ObjectReference akNPC) global native
@@ -501,6 +364,10 @@ RE::BSTArray<RE::TESObjectREFR*> FilterSettlers_Native(std::monostate, RE::BSTAr
             filteredArray.push_back(form);
         }
     }
+    if (filteredArray.empty() || filteredArray.size() == 0) {
+        if (DEBUGGING) gLog->warn("FilterSettlers_Native: No settlers found after IsSettlerNPC_Internal check. Exiting function.");
+        return filteredArray;
+    }
 
     // Remove any null entries to prevent crashes
     filteredArray.erase(std::remove(filteredArray.begin(), filteredArray.end(), nullptr), filteredArray.end());
@@ -548,108 +415,6 @@ RE::BSTArray<RE::TESObjectREFR*> FilterSettlers_Native(std::monostate, RE::BSTAr
     if (DEBUGGING) gLog->info("FilterSettlers_Native: Filtered array has {} settlers with Chest Type: {}", filteredArray.size(), aChestTypePass);
 
     return filteredArray;
-}
-
-// ObjectReference[] Function FindAllObjectsWithAnyKeywords(ObjectReference akRef, FormList akKeywords, Int aRadius) global native
-RE::BSTArray<RE::TESObjectREFR*> FindAllObjectsWithAnyKeywords_Native(std::monostate, RE::TESObjectREFR* akRef, RE::BSTArray<RE::BGSKeyword*> akKeywords, float aRadius, bool shuffleResults)
-{
-    if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Function called.");
-
-    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
-
-    if (!akRef) {
-        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: NPC reference is null.");
-        return foundObjects;
-    }
-    if (akKeywords.empty() || akKeywords.size() == 0) {
-        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: Keyword list is null or empty.");
-        return foundObjects;
-    }
-    if (aRadius <= 0.0f) {
-        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: Radius is zero or negative.");
-        return foundObjects;
-    }
-
-    // Get the worldspace and cell of the NPC
-    RE::TESObjectCELL* cell = akRef->GetParentCell();
-    if (!cell) {
-        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: NPC has no parent cell.");
-        return foundObjects;
-    }
-
-    // Get the position of the NPC
-    RE::NiPoint3 npcPosition = akRef->GetPosition();
-
-    // Get all forms in the cell
-    const auto& formsPair = cell->GetAllForms();
-    const auto* formsMap = formsPair.first;
-
-    if (!formsMap) {
-        if (DEBUGGING) gLog->warn("FindAllObjectsWithAnyKeywords_Native: No forms found in the cell.");
-        return foundObjects;
-    }
-
-    // Iterate over all forms and check for references with matching keywords within the radius
-    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
-    for (auto& entry : *formsMap) {
-        RE::TESForm* form = entry.second;
-        // early continue if form is null
-        if (!form) continue;
-        // We are only interested in references
-        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
-        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
-            continue;
-        }
-        // check distance
-        float distance = npcPosition.GetDistance(ref->GetPosition());
-        if (distance > aRadius) {
-            continue;
-        }
-        //if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Distance OK, checking keywords for reference FormID: {:08X}", ref->GetFormID());
-        // check keywords
-        RE::TESBoundObject* baseForm = ref->GetObjectReference();
-        auto keywordForm = baseForm ? baseForm->As<RE::BGSKeywordForm>() : nullptr;
-        if (!keywordForm) continue;
-        for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
-            auto keyword = keywordForm->keywords[i];
-            if (!keyword) continue;
-            if (std::find(akKeywords.begin(), akKeywords.end(), keyword) != akKeywords.end()) {
-                tempObjects.emplace_back(ref, distance);
-                break;
-            }
-        }
-    }
-
-    // Sort by distance (closest first)
-    std::sort(tempObjects.begin(), tempObjects.end(),
-    [](const auto& a, const auto& b) { return a.second < b.second; });
-    // Extract sorted references
-    for (const auto& pair : tempObjects) {
-        foundObjects.push_back(pair.first);
-    }
-
-    if (DEBUGGING) gLog->info("FindAllObjectsWithAnyKeywords_Native: Found {} matching active objects within radius {}.", foundObjects.size(), aRadius);
-
-    // Shuffle the results if requested
-    if (shuffleResults) {
-        foundObjects = ShuffleArray_Internal(foundObjects);
-    }
-
-    // Remove any null entries to prevent crashes
-    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
-
-    // Remove duplicates
-    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
-    auto it = foundObjects.begin();
-    while (it != foundObjects.end()) {
-        if (!uniqueSet.insert(*it).second) {
-            it = foundObjects.erase(it); // Duplicate found, erase
-        } else {
-            ++it;
-        }
-    }
-
-    return foundObjects;
 }
 
 // ObjectReference[] Function FindNearbyWorkshopObjects(ObjectReference akRef, Float aRadius, Bool aShuffle) global native
@@ -720,97 +485,6 @@ RE::BSTArray<RE::TESObjectREFR*> FindNearbyWorkshopObjects_Native(std::monostate
     }
 
     if (DEBUGGING) gLog->info("FindNearbyWorkshopObjects_Native: Found {} matching objects within radius {}.", foundObjects.size(), aRadius);
-
-    // Shuffle the results if requested
-    if (shuffleResults) {
-        foundObjects = ShuffleArray_Internal(foundObjects);
-    }
-
-    // Remove any null entries to prevent crashes
-    foundObjects.erase(std::remove(foundObjects.begin(), foundObjects.end(), nullptr), foundObjects.end());
-
-    // Remove duplicates
-    std::unordered_set<RE::TESObjectREFR*> uniqueSet;
-    auto it = foundObjects.begin();
-    while (it != foundObjects.end()) {
-        if (!uniqueSet.insert(*it).second) {
-            it = foundObjects.erase(it); // Duplicate found, erase
-        } else {
-            ++it;
-        }
-    }
-
-    return foundObjects;
-}
-
-// ObjectReference[] Function FindSettlerNPC(ObjectReference akRef, Float aRadius, Bool aShuffle) global native
-RE::BSTArray<RE::TESObjectREFR*> FindSettlerNPC_Native(std::monostate, RE::TESObjectREFR* akRef, float aRadius, bool shuffleResults)
-{
-    if (DEBUGGING) gLog->info("FindSettlerNPC_Native: Function called.");
-
-    RE::BSTArray<RE::TESObjectREFR*> foundObjects;
-
-    if (!akRef) {
-        if (DEBUGGING) gLog->warn("FindSettlerNPC_Native: NPC reference is null.");
-        return foundObjects;
-    }
-    if (aRadius <= 0.0f) {
-        if (DEBUGGING) gLog->warn("FindSettlerNPC_Native: Radius is zero or negative.");
-        return foundObjects;
-    }
-    // Get the worldspace and cell of the NPC
-    RE::TESObjectCELL* cell = akRef->GetParentCell();
-    if (!cell) {
-        return foundObjects;
-    }
-    // Get the position of the NPC
-    RE::NiPoint3 npcPosition = akRef->GetPosition();
-    // Get all forms in the cell
-    const auto& formsPair = cell->GetAllForms();
-    const auto* formsMap = formsPair.first;
-    if (!formsMap) {
-        return foundObjects;
-    }
-    // Iterate over all forms and check for references with matching keywords within the radius
-    std::vector<std::pair<RE::TESObjectREFR*, float>> tempObjects;
-    for (auto& entry : *formsMap) {
-        RE::TESForm* form = entry.second;
-        // early continue if form is null
-        if (!form) continue;
-        // We are only interested in references
-        RE::TESObjectREFR* ref = form->As<RE::TESObjectREFR>();
-        if (!ref || ref->IsDeleted() || ref->IsDisabled()) {
-            continue;
-        }
-        // check distance
-        float distance = npcPosition.GetDistance(ref->GetPosition());
-        if (distance > aRadius) {
-            continue;
-        }
-        // check the race for keywords
-        auto* actor = ref->As<RE::Actor>();
-        if (!actor) continue;
-        RE::TESRace* race = actor->race;
-        if (!HasAnyKeyword_Internal(race, npcInclude)) {
-            continue;
-        }
-        // check if settler NPC
-        if (!IsSettlerNPC_Internal(ref)) {
-            continue;
-        }
-        // if we reach this point, we have a match
-        tempObjects.emplace_back(ref, distance);
-    }
-
-    // Sort by distance (closest first)
-    std::sort(tempObjects.begin(), tempObjects.end(),
-    [](const auto& a, const auto& b) { return a.second < b.second; });
-    // Extract sorted references
-    for (const auto& pair : tempObjects) {
-        foundObjects.push_back(pair.first);
-    }
-
-    if (DEBUGGING) gLog->info("FindSettlerNPC_Native: Found {} matching active actors within radius {}.", foundObjects.size(), aRadius);
 
     // Shuffle the results if requested
     if (shuffleResults) {
@@ -991,92 +665,6 @@ RE::BSTArray<RE::BGSInventoryItem*> GetArmorItems_Internal(RE::BSTArray<RE::BGSI
     return armorArray;
 }
 
-// Armor Function GetBestItem(Form[] aFormArray) global native
-RE::TESObjectARMO* GetBestArmor_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray)
-{
-    // Set the DN015_NoneNameMisc TESForm to bypass the CommonLibF4 limitation to convert nullptr to Papyrus Form None
-    RE::TESObjectARMO* bestItem = nullptr;
-    if (bestItem) {
-        if (DEBUGGING) gLog->info("GetBestArmor_Native: Found fake None TESForm ObjectTypeName: {}", bestItem->GetObjectTypeName());
-    }
-    std::uint32_t bestValue = 0;
-
-    // Check if the array pointer is valid before proceeding.
-    if (aFormArray.empty() || aFormArray.size() == 0) {
-        if (DEBUGGING) gLog->warn("GetBestArmor_Native: Input array is empty or null. Returning empty TESForm.");
-        return bestItem;
-    }
-
-    if (DEBUGGING) gLog->info("GetBestArmor_Native: Function called with array size: {}", aFormArray.size());
-    
-    // Iterate over the Forms in the Array
-    for (RE::TESForm* currentItem : aFormArray) {
-        if (IsArmorWeapon_Internal(currentItem)) {
-            if (DEBUGGING) gLog->info("GetBestArmor_Native: Getting Value for FormID: {:08X}", currentItem->formID);
-            std::int32_t currentValue = GetGoldPrice_Internal(currentItem);
-            if (DEBUGGING) gLog->info("GetBestArmor_Native: Got Value: {}", currentValue);
-            // Comapre value
-            if (currentValue > bestValue) {
-                bestItem = currentItem->As<RE::TESObjectARMO>();
-                bestValue = currentValue;
-            }
-        }
-    }
-
-    if (DEBUGGING) {
-        if (bestItem) {
-            gLog->info("GetBestArmor_Native: Found best item FormID: {:08X} with value: {} .", bestItem->formID, bestValue);
-        }
-        else {
-            gLog->warn("GetBestArmor_Native: No valid item found in array. Returning null.");
-        }
-    }
-
-    return bestItem;
-}
-// Weapon Function GetBestItem(Form[] aFormArray) global native
-RE::TESObjectWEAP* GetBestWeapon_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray)
-{
-    // Set the DN015_NoneNameMisc TESForm to bypass the CommonLibF4 limitation to convert nullptr to Papyrus Form None
-    RE::TESObjectWEAP* bestItem = nullptr;
-    if (bestItem) {
-        if (DEBUGGING) gLog->info("GetBestWeapon_Native: Found fake None TESForm ObjectTypeName: {}", bestItem->GetObjectTypeName());
-    }
-    std::uint32_t bestValue = 0;
-
-    // Check if the array pointer is valid before proceeding.
-    if (aFormArray.empty() || aFormArray.size() == 0) {
-        if (DEBUGGING) gLog->warn("GetBestWeapon_Native: Input array is empty or null. Returning empty TESForm.");
-        return bestItem;
-    }
-
-    if (DEBUGGING) gLog->info("GetBestWeapon_Native: Function called with array size: {}", aFormArray.size());
-
-    // Iterate over the Forms in the Array
-    for (RE::TESForm* currentItem : aFormArray) {
-        if (IsArmorWeapon_Internal(currentItem)) {
-            if (DEBUGGING) gLog->info("GetBestWeapon_Native: Getting Value for FormID: {:08X}", currentItem->formID);
-            std::int32_t currentValue = GetGoldPrice_Internal(currentItem);
-            if (DEBUGGING) gLog->info("GetBestWeapon_Native: Got Value: {}", currentValue);
-            // Comapre value
-            if (currentValue > bestValue) {
-                bestItem = currentItem->As<RE::TESObjectWEAP>();
-                bestValue = currentValue;
-            }
-        }
-    }
-
-    if (DEBUGGING) {
-        if (bestItem) {
-            gLog->info("GetBestWeapon_Native: Found best item FormID: {:08X} with value: {} .", bestItem->formID, bestValue);
-        }
-        else {
-            gLog->warn("GetBestWeapon_Native: No valid item found in array. Returning null.");
-        }
-    }
-
-    return bestItem;
-}
 RE::TESForm* GetBestItem_Internal(RE::BSTArray<RE::TESForm*> aFormArray)
 {
     // Set the DN015_NoneNameMisc TESForm to bypass the CommonLibF4 limitation to convert nullptr to Papyrus Form None
@@ -1123,37 +711,6 @@ RE::BGSInventoryItem* GetBestItem_Internal(RE::BSTArray<RE::BGSInventoryItem*> i
     return bestItem;
 }
 
-// int Function GetGoldPrice(Form aForm) global native
-std::int32_t GetGoldPrice_Native(std::monostate, RE::TESForm* aForm)
-{
-    // Check the item
-    if (!aForm) {
-        if (DEBUGGING) gLog->info("GetGoldPrice_Native: Input Form is empty or null. Returning 0.");
-        return 0;
-    }
-
-    if (DEBUGGING) gLog->info("GetGoldPrice_Native: Function called with Form: {:08X}.", aForm->formID);
-
-    // Try casting to a TESObjectARMO
-    if (aForm->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
-        RE::TESObjectARMO* armor = aForm->As<RE::TESObjectARMO>();
-        if (armor != nullptr) {
-            if (DEBUGGING) gLog->info("GetGoldPrice_Native: Armor with value: {}.", armor->armorData.GetValue());
-            return armor->armorData.GetValue();
-        }
-    }
-
-    // Try casting to a TESObjectWEAP
-    if (aForm->GetFormType() == RE::ENUM_FORM_ID::kWEAP) {
-        RE::TESObjectWEAP* weapon = aForm->As<RE::TESObjectWEAP>();
-        if (weapon != nullptr) {
-            if (DEBUGGING) gLog->info("GetGoldPrice_Native: Weapon with value: {}.", weapon->weaponData.GetValue());
-            return weapon->weaponData.GetValue();
-        }
-    }
-
-    return 0;
-}
 // Internal call to the function
 std::int32_t GetGoldPrice_Internal(RE::TESForm* aForm)
 {
@@ -1191,41 +748,6 @@ std::uint32_t GetSlotMaskFromIndex_Internal(std::int32_t aiSlotIndex)
     return 0;
 }
 
-// Form[] Function GetMatchingItems(Form[] aFormArray, Int aSlot) global native
-RE::BSTArray<RE::TESForm*> GetMatchingItems_Native(std::monostate, RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot)
-{
-    RE::BSTArray<RE::TESForm*> result;
-
-    // Check if the array pointer is valid before proceeding.
-    if (aFormArray.empty() || aFormArray.size() == 0) {
-        if (DEBUGGING) gLog->warn("GetMatchingItems_Native: Input array is empty or null. Returning empty array.");
-        return result;
-    }
-
-    if (DEBUGGING) gLog->info("GetMatchingItems_Native: Function called");
-
-    // Make sure we only get Armor Forms
-    RE::BSTArray<RE::TESForm*> armorArray = GetArmorItems_Internal(aFormArray);
-
-    for (RE::TESForm* currentForm : armorArray) {
-        if (currentForm == nullptr) {
-            // Skip null forms
-            if (DEBUGGING) gLog->warn("GetMatchingItems_Native: The current Form is nullptr!");
-            continue;
-        }
-        RE::TESObjectARMO* armor = currentForm->As<RE::TESObjectARMO>();
-        // Check if aSlot SlotMask fits into the overall SlotMask of the Armor
-        if ((armor->bipedModelData.bipedObjectSlots & GetSlotMaskFromIndex_Internal(aSlot)) != 0) {
-            if (IsArmorWeapon_Internal(currentForm)) {
-                result.push_back(currentForm);
-            }
-        }
-    }
-
-    if (DEBUGGING) gLog->info("GetMatchingItems_Native: Function finished. Returning Array of size: {}", result.size());
-
-    return result;
-}
 RE::BSTArray<RE::TESForm*> GetMatchingItems_Internal(RE::BSTArray<RE::TESForm*> aFormArray, std::int32_t aSlot)
 {
     RE::BSTArray<RE::TESForm*> result;
@@ -1458,58 +980,23 @@ bool HasAnyKeyword_Internal(RE::TESObjectREFR* aRef, const std::string& keyword)
     }
     return false;
 }
-
-// bool Function IsArmorWeapon(Form aForm) global native
-bool IsArmorWeapon_Native(std::monostate, RE::TESForm* aForm)
+bool HasAnyKeyword_Internal(RE::TESForm* form, std::unordered_set<std::uint32_t> keywords)
 {
-    // Check the form
-    if (!aForm) {
-        if (DEBUGGING) gLog->warn("IsArmorWeapon_Native: Input Form is NULL.");
-        return false;
+    if (!form) return false;
+    auto* keywordForm = form->As<RE::BGSKeywordForm>();
+    if (!keywordForm) return false;
+    for (uint32_t i = 0; i < keywordForm->numKeywords; ++i) {
+        auto* kw = keywordForm->keywords[i];
+        if (!kw) continue;
+        std::uint32_t kwFormID = kw->GetFormID();
+        if (!kwFormID) continue;
+        if (keywords.find(kwFormID) != keywords.end()) {
+            return true;
+        }
     }
-
-    if (DEBUGGING) gLog->info("IsArmorWeapon_Native: Function called");
-
-    // Exclude if any excluded keyword matches
-    if (HasAnyKeyword_Internal(aForm, excludedKeywords)) return false;
-
-    // If include list is not empty, require at least one included keyword
-    if (!includedKeywords.empty() && !HasAnyKeyword_Internal(aForm, includedKeywords)) return false;
-
-    // Exclude if FormID is in the excluded list
-    if (IsFormIDExcluded_Internal(aForm->formID)) return false;
-
-    // Check the Form Type
-    if (aForm->GetFormType() == RE::ENUM_FORM_ID::kWEAP) {
-        auto weapon = aForm->As<RE::TESObjectWEAP>();
-        if (!weapon || weapon->weaponData.GetValue() <= 0) {
-            if (DEBUGGING) gLog->warn("IsArmorWeapon_Native: Weapon has no value. Ignoring.");
-            return false;
-        }
-        if (weapon && weapon->weaponData.ammo) {
-            if (DEBUGGING) gLog->info("IsArmorWeapon_Native: Weapon uses Ammo: {:08X}.", weapon->weaponData.ammo->formID);
-        }
-        if (DEBUGGING) gLog->info("IsArmorWeapon_Native: Valid weapon {} Form: {:08X}.", weapon->GetFullName(), aForm->formID);
-        return true;
-    }
-
-    // Check the Form Type
-    if (aForm->GetFormType() == RE::ENUM_FORM_ID::kARMO) {
-        auto armor = aForm->As<RE::TESObjectARMO>();
-        if (!armor || armor->armorData.GetValue() <= 0) {
-            if (DEBUGGING) gLog->warn("IsArmorWeapon_Native: Armor has no value. Ignoring.");
-            return false;
-        }
-        if (&armor->bipedModelData == nullptr || armor->bipedModelData.bipedObjectSlots == 0 || armor->bipedModelData.bipedObjectSlots > maxAllowedSlotmask) {
-            if (DEBUGGING) gLog->warn("IsArmorWeapon_Native: Armor has no or excluded equip slotmask. Ignoring.");
-            return false;
-        }
-        if (DEBUGGING) gLog->info("IsArmorWeapon_Native: Valid armor {} Form: {:08X}.", armor->GetFullName(), aForm->formID);
-        return true;
-    }
-
     return false;
 }
+
 bool IsArmorWeapon_Internal(RE::TESForm* aForm)
 {
     // Check the form
@@ -1555,121 +1042,13 @@ bool IsArmorWeapon_Internal(RE::BGSInventoryItem* aItem)
 
 // Helper function to check if a FormID is in the excluded list
 bool IsFormIDExcluded_Internal(uint32_t formID) {
-    char buf[9];
-    // Format as 8-digit uppercase hex
-    snprintf(buf, sizeof(buf), "%08X", formID);
-    for (const auto& idStr : excludedFormIDs) {
-        // Case-insensitive compare
-        if (_stricmp(idStr.c_str(), buf) == 0)
-            return true;
+    if (!formID) return false;
+    if (excludedFormIDs.find(formID) != excludedFormIDs.end()) {
+        return true;
     }
     return false;
 }
 
-// bool Function IsSettlerNPC(ObjectReference aNPC) global native
-bool IsSettlerNPC_Native(std::monostate, RE::TESObjectREFR* aNPC)
-{
-    if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Function called");
-
-    // Check the object reference
-    if (!aNPC) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Input NPC is NULL.");
-        return false;
-    }
-
-    auto actor = aNPC->As<RE::Actor>();
-    if (!actor) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Input NPC is not an Actor.");
-        return false;
-    }
-
-    // Pre-checks on the NPC
-    if (actor->IsDeleted()) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is deleted. Ignoring.");
-        return false;
-    }
-    if (actor->IsDisabled()) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is disabled. Ignoring.");
-        return false;
-    }
-    if (actor->IsDead(false)) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is dead. Ignoring.");
-        return false;
-    }
-    if (actor->IsChild()) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is a child. Ignoring.");
-        return false;
-    }
-    if (actor->IsPlayer()) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is the player. Ignoring.");
-        return false;
-    }
-    if (actor->IsInCombat()) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is in combat. Ignoring.");
-        return false;
-    }
-    RE::Actor* player = RE::PlayerCharacter::GetSingleton();
-    if (!player) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: Could not get player Actor.");
-    } else if (actor->GetHostileToActor(player)) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC is hostile to the player. Ignoring.");
-        return false;
-    }
-
-    // Check if NPC's EditorID is in npcExclude
-    if (const char* actorEditorID = actor->GetFormEditorID()) {
-        //if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Found NPC FormID {:08X} with EditorID {}.", actor->formID, actorEditorID);
-        std::string editorIDLower(actorEditorID);
-        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
-        for (const auto& excludeID : npcExclude) {
-            if (editorIDLower.find(excludeID) != std::string::npos) {
-                if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: The NPC EditorID {} is in the exclude list. Ignoring.", actorEditorID);
-                return false;
-            }
-        }
-    }
-    
-    // Get the Actor's factions
-    std::vector<std::string> factionEditorIDs;
-    auto npc = actor->GetNPC();
-    if (npc) {
-        //if (DEBUGGING) gLog->info("IsSettlerNPC_Native: Found NPC FormID {:08X} with {} factions.", npc->formID, npc->factions.size());
-        for (auto& factionData : npc->factions) {
-            RE::TESFaction* faction = factionData.faction;
-            const char* editorID = faction ? faction->GetFormEditorID() : nullptr;
-            if (DEBUGGING && faction) {
-                //gLog->info("IsSettlerNPC_Native: Found Faction FormID {:08X} with EditorID {}.", faction->formID, faction->GetFormEditorID());
-            }
-            if (!editorID) continue;
-            factionEditorIDs.emplace_back(editorID);
-        }
-    } else {
-        return false;
-    }
-
-    // Faction checks
-    if (includeFaction.empty() || includeFaction.size() == 0) {
-        if (DEBUGGING) gLog->warn("IsSettlerNPC_Native: No faction includeFaction filter set, passing No NPCs.");
-        return false;
-    } else {
-        // Check if any of the NPC's factions are in the include list and not in the exclude list
-        bool included = includeFaction.empty();
-        for (const std::string& factionEditorID : factionEditorIDs) {
-            std::string factionEditorIDLower = factionEditorID;
-            std::transform(factionEditorIDLower.begin(), factionEditorIDLower.end(), factionEditorIDLower.begin(), ::tolower);
-            if (includeFaction.find(factionEditorIDLower) != includeFaction.end())
-                included = true;
-            if (excludeFaction.find(factionEditorIDLower) != excludeFaction.end())
-                return false;
-        }
-        if (!included) return false;
-    }
-
-    if (DEBUGGING) gLog->info("IsSettlerNPC_Native: NPC FormID {:08X} passed faction checks.", aNPC->formID);
-
-    // All tests passed
-    return true;
-}
 bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC)
 {
     // Check the object reference
@@ -1678,95 +1057,102 @@ bool IsSettlerNPC_Internal(RE::TESObjectREFR* aNPC)
     }
     auto actor = aNPC->As<RE::Actor>();
     if (!actor) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The object is not an Actor. Failsafe ignoring.");
+        return false;
+    }
+    auto npc = actor->GetNPC();
+    if (!npc) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: Could not get ActorBase for the NPC. Failsafe ignoring.");
         return false;
     }
     // Pre-checks on the NPC
     if (actor->IsDeleted()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is deleted. Failsafe ignoring.");
         return false;
     }
     if (actor->IsDisabled()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is disabled. Failsafe ignoring.");
         return false;
     }
     if (actor->IsDead(false)) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is dead. Failsafe ignoring.");
         return false;
     }
     if (actor->IsChild()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is a child. Failsafe ignoring.");
         return false;
     }
     if (actor->IsPlayer()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is the player. Failsafe ignoring.");
         return false;
     }
     if (actor->IsInCombat()) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is in combat. Failsafe ignoring.");
         return false;
     }
     RE::Actor* player = RE::PlayerCharacter::GetSingleton();
     if (!player) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: Could not get player Actor. Failsafe ignoring.");
         return false;
     } else if (actor->GetHostileToActor(player)) {
+        if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC is hostile to the player. Failsafe ignoring.");
         return false;
     }
-    // Check if NPC's EditorID is in npcExclude
-    if (const char* actorEditorID = actor->GetFormEditorID()) {
-        std::string editorIDLower(actorEditorID);
-        std::transform(editorIDLower.begin(), editorIDLower.end(), editorIDLower.begin(), ::tolower);
-        for (const auto& excludeID : npcExclude) {
-            if (editorIDLower.find(excludeID) != std::string::npos) {
-                if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC EditorID {} is in the exclude list. Ignoring.", actorEditorID);
-                return false;
-            }
-        }
-    }
-    // Get the Actor's factions
-    std::vector<std::string> factionEditorIDs;
-    auto npc = actor->GetNPC();
-    if (npc) {
-        for (auto& factionData : npc->factions) {
-            RE::TESFaction* faction = factionData.faction;
-            const char* editorID = faction ? faction->GetFormEditorID() : nullptr;
-            if (DEBUGGING && faction) {
-            }
-            if (!editorID) continue;
-            factionEditorIDs.emplace_back(editorID);
-        }
+    // Get the needed FormIDs and EditorIDs
+    std::uint32_t npcBaseFormID = npc->GetFormID();
+    std::uint32_t npcRefFormID = actor->GetFormID();
+    std::string npcEditorID;
+    if (npc->GetFormEditorID() && std::strlen(npc->GetFormEditorID()) > 0) {
+        npcEditorID = npc->GetFormEditorID();
+    } else if (actor->GetFormEditorID() && std::strlen(actor->GetFormEditorID()) > 0) {
+        npcEditorID = actor->GetFormEditorID();
+    } else if (aNPC->GetFormEditorID() && std::strlen(aNPC->GetFormEditorID()) > 0) {
+        npcEditorID = aNPC->GetFormEditorID();
     } else {
-        return false;
+        npcEditorID = "Unknown";
+    }
+    // Check if NPC's base FormID is in excludeNPC
+    if (excludeNPC.empty() || excludeNPC.size() == 0) {
+        if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: No excludeNPC filter set, skipping.");
+    } else {
+        if (npcBaseFormID != 0 && npcRefFormID != 0) {
+            if (excludeNPC.find(npcBaseFormID) != excludeNPC.end() || excludeNPC.find(npcRefFormID) != excludeNPC.end()) {
+                if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC {} Ref FormID {:08X} Base FormID {:08X} is in the exclude list. Ignoring.", npcEditorID, npcRefFormID, npcBaseFormID);
+                return false;
+            } else {
+                if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: The NPC {} Ref FormID {:08X} Base FormID {:08X} is not in the exclude list.", npcEditorID, npcRefFormID, npcBaseFormID);
+            }
+        } else {
+            if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: Could not get Actor FormIDs. Failsafe ignoring.");
+            return false;
+        }
     }
     // Faction checks
-    if (includeFaction.empty() || includeFaction.size() == 0) {
-        return false;
+    if (excludeFaction.empty() || excludeFaction.size() == 0) {
+        if (DEBUGGING) gLog->info("IsSettlerNPC_Internal: No excludeFaction filter set, skipping.");
     } else {
-        // Check if any of the NPC's factions are in the include list and not in the exclude list
-        bool included = includeFaction.empty();
-        for (const std::string& factionEditorID : factionEditorIDs) {
-            std::string factionEditorIDLower = factionEditorID;
-            std::transform(factionEditorIDLower.begin(), factionEditorIDLower.end(), factionEditorIDLower.begin(), ::tolower);
-            if (includeFaction.find(factionEditorIDLower) != includeFaction.end())
-                included = true;
-            if (excludeFaction.find(factionEditorIDLower) != excludeFaction.end())
-                return false;
+        // Get the Actor's factions
+        std::vector<std::uint32_t> factionFormIDs;
+        for (auto& factionData : npc->factions) {
+            RE::TESFaction* faction = factionData.faction;
+            std::uint32_t factionFormID = faction->GetFormID();
+            if (!factionFormID) continue;
+            factionFormIDs.emplace_back(factionFormID);
         }
-        if (!included) return false;
+        if (factionFormIDs.empty() || factionFormIDs.size() == 0) {
+            if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC has no factions. Failsafe ignoring.");
+            return false;
+        }
+        // Check if any of the NPC's factions are in the exclude list
+        for (const std::uint32_t& factionFormID : factionFormIDs) {
+            if (excludeFaction.find(factionFormID) != excludeFaction.end()) {
+                if (DEBUGGING) gLog->warn("IsSettlerNPC_Internal: The NPC {} Base FormID: {:08X} is in the faction {:08X} exclude list. Ignoring.", npcEditorID, npcBaseFormID, factionFormID);
+                return false;
+            }
+        }
     }
-
     // All tests passed
     return true;
-}
-
-// bool Function ItemMatchesSlot(Armor aArmor, Int aSlot) global native
-bool ItemMatchesSlot_Native(std::monostate, RE::TESObjectARMO* aArmor, std::int32_t aSlot)
-{
-    // Check the form
-    if (!aArmor) {
-        if (DEBUGGING) gLog->warn("IsArmorWeapon_Native: Input Armor is NULL.");
-        return false;
-    }
-
-    // Compare the SlotMasks
-    if ((aArmor->bipedModelData.bipedObjectSlots & GetSlotMaskFromIndex_Internal(aSlot)) != 0) {
-        return true;
-    }
-
-    return false;
 }
 
 // bool Function ProcessNPCArmor(ObjectReference aNPC, ObjectReference aContainer) global native
@@ -2057,15 +1443,6 @@ bool SettingAnimationEnabled_Native(std::monostate)
     return ANIMATION;
 }
 
-// ObjectReference[] Function ShuffleArray(ObjectReference[] aFormArray) global native
-RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Native(std::monostate, RE::BSTArray<RE::TESObjectREFR*> aFormArray)
-{
-    // shuffle the array using a random device
-    static std::random_device rd;
-    static std::mt19937 g(rd());
-    std::shuffle(aFormArray.begin(), aFormArray.end(), g);
-    return aFormArray;
-}
 RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Internal(RE::BSTArray<RE::TESObjectREFR*> aFormArray)
 {
     // shuffle the array using a random device
@@ -2075,58 +1452,6 @@ RE::BSTArray<RE::TESObjectREFR*> ShuffleArray_Internal(RE::BSTArray<RE::TESObjec
     return aFormArray;
 }
 
-// Bool Function StringContains(string aString, string aSearchString) global native
-bool StringContains_Native(std::monostate, RE::BSFixedString aString, RE::BSFixedString aSearchString)
-{
-    if (DEBUGGING) gLog->info("StringContains_Native: Function called with String {} - Contains {}.", aString, aSearchString);
-
-    if (aString.data() == nullptr || aString.empty() || aSearchString.data() == nullptr || aSearchString.empty()) {
-        if (DEBUGGING) gLog->warn("StringContains_Native: One or both Input Strings are null or empty.");
-        return false;
-    }
-
-    return aString.contains(aSearchString);
-}
-
-// bool Function SwapItems(ObjectReference aNPC, Form aOldItem, Form aNewItem, ObjectReference aContainer) global native
-bool SwapItems_Native(std::monostate, RE::TESObjectREFR* aNPC, RE::TESForm* aOldItem, RE::TESForm* aNewItem, RE::TESObjectREFR* aContainer)
-{
-    // Check the object reference
-    if (!aNPC || !aContainer) {
-        if (DEBUGGING) gLog->warn("SwapItems_Native: aNPC or aContainer pointers is NULL. Cannot continue.");
-        return false;
-    }
-
-    // Check the object reference
-    if (!aNewItem) {
-        if (DEBUGGING) gLog->warn("SwapItems_Native: aNewItem pointer is NULL. Cannot continue.");
-        return false;
-    }
-
-    // Declare the objects
-    RE::TESBoundObject* newItemObject = nullptr;
-    RE::TESBoundObject* oldItemObject = nullptr;
-
-    // Move the items
-    // aNewItem: aContainer -> aNPC
-    newItemObject = aNewItem->As<RE::TESBoundObject>();
-    RE::TESObjectREFR::RemoveItemData newItemRemoveItemData = BuildRemoveItemData_Internal(newItemObject, aNPC, 1);
-    aContainer->RemoveItem(newItemRemoveItemData);
-    if (DEBUGGING) gLog->info("SwapItems_Native: Moved new item from the container to the NPC, FormID: {:08X}", aNewItem->formID);
-    if (IsArmorWeapon_Internal(aOldItem)) {
-        // Unequip the old item first
-        UnEquipInventoryItem_Internal(aNPC, aOldItem->As<RE::BGSInventoryItem>());
-        // aOldItem: aNPC -> aContainer
-        oldItemObject = aOldItem->As<RE::TESBoundObject>();
-        RE::TESObjectREFR::RemoveItemData oldItemRemoveItemData = BuildRemoveItemData_Internal(oldItemObject, aContainer, 1);
-        aNPC->RemoveItem(oldItemRemoveItemData);
-        if (DEBUGGING) gLog->info("SwapItems_Native: Moved new item from the container to the NPC, FormID: {:08X}", aOldItem->formID);
-    }
-
-    if (DEBUGGING) gLog->info("SwapItems_Native: Function finished successfully.");
-
-    return true;
-}
 bool SwapItems_Internal(RE::TESObjectREFR* aNPC, RE::BGSInventoryItem* aOldItem, RE::BGSInventoryItem* aNewItem, RE::TESObjectREFR* aContainer)
 {
     // Check the object reference
@@ -2224,24 +1549,13 @@ bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
     
     vm->BindNativeMethod("ES_API", "AdminEquipSettlers", AdminEquipSettlers_Native, true);
     vm->BindNativeMethod("ES_API", "AdminStripSettlers", AdminStripSettlers_Native, true);
-    vm->BindNativeMethod("ES_API", "CombineArrayForm", CombineArrayForm_Native, true);
-    vm->BindNativeMethod("ES_API", "CombineArrayObject", CombineArrayObject_Native, true);
     vm->BindNativeMethod("ES_API", "EquipBestItems", EquipBestItems_Native, true);
     vm->BindNativeMethod("ES_API", "EquipBestItemsAll", EquipBestItemsAll_Native, true);
     vm->BindNativeMethod("ES_API", "FilterSettlers", FilterSettlers_Native, true);
-    vm->BindNativeMethod("ES_API", "FindAllObjectsWithAnyKeywords", FindAllObjectsWithAnyKeywords_Native, true);
     vm->BindNativeMethod("ES_API", "FindNearbyWorkshopObjects", FindNearbyWorkshopObjects_Native, true);
-    vm->BindNativeMethod("ES_API", "FindSettlerNPC", FindSettlerNPC_Native, true);
     vm->BindNativeMethod("ES_API", "FindSettlerTrunk", FindSettlerTrunk_Native, true);
     vm->BindNativeMethod("ES_API", "GetArmorItems", GetArmorItems_Native, true);
-    vm->BindNativeMethod("ES_API", "GetBestArmor", GetBestArmor_Native, true);
-    vm->BindNativeMethod("ES_API", "GetBestWeapon", GetBestWeapon_Native, true);
-    vm->BindNativeMethod("ES_API", "GetGoldPrice", GetGoldPrice_Native, true);
-    vm->BindNativeMethod("ES_API", "GetMatchingItems", GetMatchingItems_Native, true);
     vm->BindNativeMethod("ES_API", "GetWeaponItems", GetWeaponItems_Native, true);
-    vm->BindNativeMethod("ES_API", "IsArmorWeapon", IsArmorWeapon_Native, true);
-    vm->BindNativeMethod("ES_API", "IsSettlerNPC", IsSettlerNPC_Native, true);
-    vm->BindNativeMethod("ES_API", "ItemMatchesSlot", ItemMatchesSlot_Native, true);
     vm->BindNativeMethod("ES_API", "ProcessNPCArmor", ProcessNPCArmor_Native, true);
     vm->BindNativeMethod("ES_API", "PreProcessNPCArmor", PreProcessNPCArmor_Native, true);
     vm->BindNativeMethod("ES_API", "ProcessNPCWeapon", ProcessNPCWeapon_Native, true);
@@ -2249,9 +1563,6 @@ bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
     vm->BindNativeMethod("ES_API", "SetObjectName", SetObjectName_Native, true);
     vm->BindNativeMethod("ES_API", "SettingDebuggingEnabled", SettingDebuggingEnabled_Native, true);
     vm->BindNativeMethod("ES_API", "SettingAnimationEnabled", SettingAnimationEnabled_Native, true);
-    vm->BindNativeMethod("ES_API", "ShuffleArray", ShuffleArray_Native, true);
-    vm->BindNativeMethod("ES_API", "StringContains", StringContains_Native, true);
-    vm->BindNativeMethod("ES_API", "SwapItems", SwapItems_Native, true);
 
     if (DEBUGGING) gLog->info("RegisterPapyrusFunctions: All Papyrus functions registration attempts completed.");
 
